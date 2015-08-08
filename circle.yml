@@ -1,0 +1,11 @@
+deployment:
+  staging:
+    branch: /(feature|fix|chore).*/
+    commands:
+      #Copy generated JAR to correct destination
+      - echo $CIRCLE_BRANCH
+  production:
+    branch: master
+    commands:
+      #Copy generated JAR to correct destination
+      - echo $CIRCLE_BRANCH
