@@ -73,6 +73,8 @@ public class Config {
 	private static final int EXTENDEDMODE_DELAY_DEFAULT = 5 * 1000; //5 secs
 	private static int extendedModeDelay = EXTENDEDMODE_DELAY_DEFAULT;
 	
+	public static String updateAttemptsFile = "update-attempts.cfg";
+	
 	public static void init(Class<?> mainClass) {
 		
 		isWindows = System.getProperty("os.name").startsWith("Windows");
@@ -269,6 +271,10 @@ public class Config {
 	public static String getViewerUrl() {
 		return viewerBaseUrl + "?type=display&player=true&id=" + displayId + "&claimId=" + claimId + "&sysinfo=" + SystemInfo.asUrlParam(true);
 
+	}
+	
+	public static String getComponentsVersionsUrl() {
+	  return coreBaseUrl + "/v2/player/components?os=" + playerOS;
 	}
 
 	public static void saveViewerStartupUrlToFile() {

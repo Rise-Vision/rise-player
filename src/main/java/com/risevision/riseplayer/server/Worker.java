@@ -22,6 +22,7 @@ import com.risevision.riseplayer.DisplayErrors;
 import com.risevision.riseplayer.Globals;
 import com.risevision.riseplayer.timers.HeartbeatTimer;
 import com.risevision.riseplayer.utils.SystemInfo;
+import com.risevision.riseplayer.utils.UpdateUtils;
 import com.risevision.riseplayer.utils.Utils;
 
 class Worker extends WebServer implements HttpConstants, Runnable {
@@ -219,7 +220,7 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 					Utils.restart();
 				} else if ("true".equalsIgnoreCase(queryMap.get("update_required"))) {
 					log("update_required received");
-					Utils.restart(); 
+					new UpdateUtils().restartIfUpdateAvailable(); 
 				} else	if ("true".equalsIgnoreCase(queryMap.get("reboot_enabled"))) {
 					Config.setRestartTime(queryMap.get("reboot_time")); //time to restart (not reboot)
 				} else	if ("off".equalsIgnoreCase(queryMap.get("display_command"))) {
