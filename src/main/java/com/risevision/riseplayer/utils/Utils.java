@@ -143,6 +143,7 @@ public class Utils {
 		cmd.add(Config.chromePath);
 		cmd.add("--flag-switches-begin");
 		cmd.add("--noerrdialogs");
+    cmd.add("--no-first-run");
 		cmd.add("--no-message-box");
 		cmd.add("--disable-desktop-notifications");
 		cmd.add("--allow-running-insecure-content");
@@ -190,6 +191,7 @@ public class Utils {
 		cmd.add("--kiosk");
 		cmd.add("--no-default-browser-check");
 		cmd.add("--noerrdialogs");
+    cmd.add("--no-first-run");
 		cmd.add("--no-message-box");
 		cmd.add("--disable-desktop-notifications");
 		cmd.add("--allow-running-insecure-content");
@@ -213,6 +215,7 @@ public class Utils {
 		cmd.append(" --kiosk");
 		cmd.append(" --no-default-browser-check");
 		cmd.append(" --noerrdialogs");
+    cmd.append(" --no-first-run");
 		cmd.append(" --no-message-box");
 		cmd.append(" --disable-desktop-notifications");
 		cmd.append(" --allow-running-insecure-content");
