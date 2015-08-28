@@ -25,7 +25,7 @@ public class Utils {
 		DisplayErrors.getInstance().writeErrorsToFile();
 		
 		String[] shutdownCmdWindows = new String[] {"shutdown", "-r", "-c", "Rise Player needs to reboot computer."};
-		String[] shutdownCmdUbuntu = new String[] {"bash", "-c", "dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart"};
+		String[] shutdownCmdUbuntu = new String[] {"bash", "-c", "dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 \"org.freedesktop.login1.Manager.Reboot\" boolean:true"};
 		String[] shutdownCmdUbuntuRoot = new String[] {"shutdown", "-r", "0"};
 
 		String shutdownCmd[] = Config.isWindows ? shutdownCmdWindows : (Config.isLnxRoot ? shutdownCmdUbuntuRoot : shutdownCmdUbuntu);
