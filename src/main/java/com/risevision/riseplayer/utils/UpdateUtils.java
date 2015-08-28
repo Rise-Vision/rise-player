@@ -110,7 +110,7 @@ public class UpdateUtils {
   
   protected Properties getRemoteComponentsVersions() {
     try {
-      String prefixUrl = "https://install-versions.risevision.com/remote-components";
+      String prefixUrl = "http://install-versions.risevision.com/remote-components";
       String lnxVersion = System.getProperty("os.arch").equals("x86") ? "-lnx-32" : "-lnx-64";
       String suffixUrl = !Config.playerOS.equals("win") ? lnxVersion : "";
       
