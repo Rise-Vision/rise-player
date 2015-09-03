@@ -21,6 +21,9 @@ import com.risevision.riseplayer.Log;
 public class UpdateUtils {
   private static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
   
+  private static final String STABLE_CHANNEL = "Stable";
+  private static final String LATEST_CHANNEL = "Latest";
+  private static final String FORCE_STABLE = "ForceStable";
   private static final String UPDATE_ATTEMPT_PROPERTY = "attempt";
   private static final String LATEST_CHECK_PROPERTY = "latestCheck";
   private static final Integer MAX_UPDATE_ATTEMPTS = 3;
@@ -28,9 +31,14 @@ public class UpdateUtils {
   
   public void restartIfUpdateAvailable() {
     Properties remoteComponents = getRemoteComponentsVersions();
+    boolean updatesOnStable = componentUpdatesAvailable(remoteComponents, STABLE_CHANNEL);
+    boolean updatesOnLatest = componentUpdatesAvailable(remoteComponents, LATEST_CHANNEL);
+    boolean forceStable = remoteComponents.getProperty(FORCE_STABLE).equals("true");
+    // Restart the player only if forceStable was requested and local does not match Stable, or if neither Stable or Latest match local
+    boolean updatesAvailable = forceStable ? updatesOnStable : (updatesOnStable && updatesOnLatest);
     
-    if(componentUpdatesAvailable(remoteComponents)) {
-      if(componentsReachable(remoteComponents)) {
+    if(updatesAvailable) {
+      if(componentsReachable(remoteComponents, STABLE_CHANNEL) && componentsReachable(remoteComponents, LATEST_CHANNEL)) {
         Properties cfg = getComponentsUpdateAttempts();
         int attempts = 0;
         Date lastCheck = parseDate("01/01/1990 00:00:00");
@@ -76,8 +84,8 @@ public class UpdateUtils {
     }
   }
   
-  protected boolean componentUpdatesAvailable(Properties remoteComponents) {
-    String remoteNames[] = new String[] { "BrowserVersion", "CacheVersion", "InstallerVersion", "JavaVersion", "PlayerVersion" };
+  protected boolean componentUpdatesAvailable(Properties remoteComponents, String channel) {
+    String remoteNames[] = new String[] { "InstallerVersion", "BrowserVersion" + channel, "CacheVersion" + channel, "JavaVersion" + channel, "PlayerVersion" + channel };
     String localNames[] = new String[] { "chromium", "RiseCache", "installer", "java", "RisePlayer" };
     boolean versionsMatch = true;
     
@@ -94,8 +102,8 @@ public class UpdateUtils {
     return !versionsMatch;
   }
   
-  protected boolean componentsReachable(Properties remoteComponents) {
-    String remoteNames[] = new String[] { "BrowserURL", "CacheURL", "InstallerURL", "JavaURL", "PlayerURL" };
+  protected boolean componentsReachable(Properties remoteComponents, String channel) {
+    String remoteNames[] = new String[] { "InstallerURL", "BrowserURL" + channel, "CacheURL" + channel, "JavaURL" + channel, "PlayerURL" + channel };
     
     for(int i = 0; i < remoteNames.length; i++) {
       String url = remoteComponents.getProperty(remoteNames[i]);
@@ -110,9 +118,9 @@ public class UpdateUtils {
   
   protected Properties getRemoteComponentsVersions() {
     try {
-      String prefixUrl = "http://install-versions.risevision.com/remote-components";
-      String lnxVersion = System.getProperty("os.arch").equals("x86") ? "-lnx-32" : "-lnx-64";
-      String suffixUrl = !Config.playerOS.equals("win") ? lnxVersion : "";
+      String prefixUrl = "http://install-versions.risevision.com/remote-components-";
+      String lnxVersion = System.getProperty("os.arch").equals("x86") ? "lnx-32" : "lnx-64";
+      String suffixUrl = !Config.playerOS.equals("win") ? lnxVersion : "win";
       
       URL resource = new URL(prefixUrl + suffixUrl + ".cfg");
       
