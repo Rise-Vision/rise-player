@@ -223,7 +223,6 @@ public class Utils {
 		cmd.append(" --allow-outdated-plugins");   //this is for Java applets
 		cmd.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
 		cmd.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
-		cmd.append(" --ppapi-flash-path='" + Config.getFlashPluginPath() + "'");
 		cmd.append(" --touch-events=enabled");
 		cmd.append(" '" + Config.getViewerUrl() + "'");
 
