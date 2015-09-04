@@ -16,6 +16,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.risevision.riseplayer.utils.Utils;
 
 public class DisplayErrors {
@@ -27,8 +28,6 @@ public class DisplayErrors {
 	private List<DisplayError> displayErrorList = new ArrayList<DisplayError>(); 
 	static PrintStream log = null;
 	
-	public static final int DISPLAYERROR_NOT_ROOT = 1001;
-	public static final int DISPLAYERROR_NOT_ROOT_MAX = 10;
 	public static final int DISPLAYERROR_VIEWER_NOT_RESPONDING = 1004;
 	public static final int DISPLAYERROR_VIEWER_NOT_RESPONDING_MAX = 10;
 
@@ -48,26 +47,19 @@ public class DisplayErrors {
 		for (int i=0; i < displayErrorList.size(); i++) {
 			sendToCore = false;
 			DisplayError dispErr = displayErrorList.get(i);
-			if(DISPLAYERROR_NOT_ROOT == dispErr.code && dispErr.occourances > DISPLAYERROR_NOT_ROOT_MAX) {
-				errCode = dispErr.code;
-				sendToCore = true;
-				break;
-			} else if(DISPLAYERROR_VIEWER_NOT_RESPONDING == dispErr.code && dispErr.occourances > DISPLAYERROR_VIEWER_NOT_RESPONDING_MAX) {
+			
+			if(DISPLAYERROR_VIEWER_NOT_RESPONDING == dispErr.code && dispErr.occourances > DISPLAYERROR_VIEWER_NOT_RESPONDING_MAX) {
 				errCode = dispErr.code;
 				sendToCore = true;
 				break;
 			}
 			
-			if(DISPLAYERROR_NOT_ROOT == dispErr.code && dispErr.occourances < (-1*DISPLAYERROR_NOT_ROOT_MAX)) {
-				errCode = 0;
-				deleteError(dispErr.code);
-				sendToCore = true;
-			} else if(DISPLAYERROR_VIEWER_NOT_RESPONDING == dispErr.code && dispErr.occourances < (-1*DISPLAYERROR_VIEWER_NOT_RESPONDING_MAX)) {
+			if(DISPLAYERROR_VIEWER_NOT_RESPONDING == dispErr.code && dispErr.occourances < (-1*DISPLAYERROR_VIEWER_NOT_RESPONDING_MAX)) {
 				errCode = 0;
 				deleteError(dispErr.code);
 				sendToCore = true;
 			}
-	    }
+	  }
 		
 		if(sendToCore && !Config.displayId.isEmpty()) {
 			if(sendToCore(displayErrUrl + "id=" + Config.displayId + "&st=" + Integer.toString(errCode)))
@@ -155,9 +147,9 @@ public class DisplayErrors {
 		try {
 			File f = new File(Config.appPath, fileName);
 			if (f.exists()) {
-				BufferedReader br = null;
-				String line = "";
-				br = new BufferedReader(new FileReader(f));
+				BufferedReader br = new BufferedReader(new FileReader(f));
+        String line = "";
+				
 				while ((line = br.readLine()) != null) {
 					 try{
 						// use comma as separator
@@ -167,6 +159,8 @@ public class DisplayErrors {
 					 }
 					 catch (Exception e) {} 
 				}
+				
+				br.close();
 			}
 			
 		} catch (Exception e) {
@@ -197,13 +191,6 @@ public class DisplayErrors {
 		{
 			Log.warn("Error updating display errors file. File name: " + fileName + ". Error: " + e.getMessage());
 		} 
-	}
-
-	public void checkUserLinux() {
-		if(!Config.isWindows && !Config.isLnxRoot) {
-			updateError(DISPLAYERROR_NOT_ROOT,1);
-		} else
-			updateError(DISPLAYERROR_NOT_ROOT,-1);
 	}
 	
 	public void viewerNotResponding( int value) {

@@ -26,7 +26,6 @@ public class Main {
 		DisplayErrors.getInstance().loadErrorsFromFile();		
 		
 		try {
-			if(!Config.isWindows) DisplayErrors.getInstance().checkUserLinux();
 			//use socket to test if another instance is running
 			java.net.ServerSocket ss = WebServer.createServerSocket();// new java.net.ServerSocket(Config.basePort); 
 						
