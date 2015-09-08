@@ -86,7 +86,7 @@ public class UpdateUtils {
   
   protected boolean componentUpdatesAvailable(Properties remoteComponents, String channel) {
     String remoteNames[] = new String[] { "InstallerVersion", "BrowserVersion" + channel, "CacheVersion" + channel, "JavaVersion" + channel, "PlayerVersion" + channel };
-    String localNames[] = new String[] { "chromium", "RiseCache", "installer", "java", "RisePlayer" };
+    String localNames[] = new String[] { "installer", "chromium", "RiseCache", "java", "RisePlayer" };
     boolean versionsMatch = true;
     
     for(int i = 0; i < remoteNames.length; i++) {
