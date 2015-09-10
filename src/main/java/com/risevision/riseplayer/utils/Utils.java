@@ -223,7 +223,10 @@ public class Utils {
 		cmd.append(" --allow-outdated-plugins");   //this is for Java applets
 		cmd.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
 		cmd.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
+		cmd.append(" --touch-devices=$(xinput list | grep Touchscreen | awk 'match($0, /id=/){print substr($0, RSTART+3, RLENGTH-1)}')");
 		cmd.append(" --touch-events=enabled");
+		cmd.append(" --enable-pinch");
+		
 		cmd.append(" '" + Config.getViewerUrl() + "'");
 
 		//output result into chromium.log file
