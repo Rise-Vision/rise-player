@@ -270,7 +270,10 @@ public class Config {
 
 	public static String getViewerUrl() {
 		return viewerBaseUrl + "?type=display&player=true&id=" + displayId + "&claimId=" + claimId + "&sysinfo=" + SystemInfo.asUrlParam(true);
-
+	}
+	
+	public static String getPlayerLocalIndexUrl() {
+	  return "file:///" + (Config.appPath + File.separator + "index.html").replaceAll("\\\\", "/");
 	}
 	
 	public static String getComponentsVersionsUrl() {

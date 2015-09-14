@@ -1,0 +1,105 @@
+<html>
+<head>
+    <title>Rise Player Configuration</title>
+    <link href="css/rise.min.css" rel="stylesheet" type="text/css">
+
+    <script src="options-page-browserified.js"></script>
+</head>
+<body style="margin: 0px;">
+  <!-- Main View -->
+  <div class="container">
+    <div class="content-box add-top">
+      <div class="content-box-body padding-lg">
+      <div class="app-header">
+        <div class="title-block">
+          <h1>Configure Rise Player</h1>
+        </div>
+        <div class="global-actions">
+          <a href="https://help-stage.risevision.com/doc-getting-started-revision/_site/user/create-a-display" target="_blank" class="btn btn-primary btn-lg">Help <i class="fa fa-question icon-right"></i></a>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="row" id="statusContainer" style="display:none;">
+        <div class="col-sm-12">
+          <strong><div id="status" class="alert alert-danger">Offline</div></strong>
+        </div>
+      </div>
+
+      <div id="displayReadySection">
+        <div class="jumbotron">
+          <div vertilize>
+            <h2 class="remove-top">Success!</h2>
+            <p class="text-muted lead">Your Display Is Ready.</p>
+            <form>
+              <div class="input-group-lg half-bottom">
+                <input type="text" id="displayNameReady" class="form-control" readonly>
+              </div>
+              <div class="input-group-lg">
+                <input type="text" id="displayIdReady" class="form-control" readonly>
+              </div>
+            </form>
+            <div class="add-top text-right">
+              <button id="changeDisplayIdApply" class="btn btn-primary">Change Display</button>
+            </div><!--add-top-->
+          </div>
+        </div><!--jumbotron-->
+      </div>
+
+      <div class="row" id="displaySetupSection" vertilize-container>
+        <div class="col-sm-12">
+          <h3 class=text-center>
+            Please enter a Display ID or Claim ID to register this display.
+          </h3>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="jumbotron">
+            <div vertilize>
+            <h2 class="remove-top">I Have a Display ID</h2>
+            <p class="text-muted">A display ID is a unique identifier assigned to each display that you add to the platform.</p>
+            <form>
+               <div class="input-group-lg">
+                 <input type="text" id="displayId" class="form-control" placeholder="Enter Display ID">
+               </div> 
+            </form>
+            <div class="add-top text-right">
+              <button id="displayIdApply" class="btn btn-primary">Apply <i class="fa fa-check icon-right"></i></button>
+            </div><!--add-top-->
+            </div>
+          </div><!--jumbotron-->
+        </div><!--col-->
+
+        <div class="col-sm-6">
+          <div class="jumbotron">
+            <div vertilize>
+            <h2 class="remove-top">I Have a Claim ID</h2>
+            <p class="text-muted">Your claim ID is the unique identifier assigned to your company by the platform.</p>
+            <form>
+               <div class="input-group-lg">
+                 <input type="text" id="claimId" class="form-control" placeholder="Enter Claim ID">
+               </div> 
+
+               <div class="input-group-lg half-top">
+                 <input type="text" id="displayName" class="form-control" placeholder="Display Name">
+               </div> 
+            </form>
+
+            <div class="add-top text-right">
+              <button id="claimIdApply" class="btn btn-primary">Apply <i class="fa fa-check icon-right"></i></button>
+            </div><!--add-top-->
+
+            </div>
+          </div><!--jumbotron-->
+        </div>
+      </div><!--vertical-accordion-->
+
+      <div class="text-right">
+        <button class="btn btn-lg btn-default" id="close">Close <i class="fa fa-times icon-right"></i></button>
+      </div>
+      </div><!--content-box-body-->
+    </div><!--content-box-->
+  </div><!-- End Container-->
+</body>
+</html>

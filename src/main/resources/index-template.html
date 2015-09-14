@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style>
+    iframe {
+      position: absolute;
+      overflow: hidden;
+      border: none;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <script type="text/javascript" src="${playerServerURL}/config/js/mousetrap.min.js"></script>
+</head>
+<body>
+  <iframe id="configFrame" src="${playerServerURL}/config/index.html"></iframe>
+  <iframe id="viewerFrame" src="${viewerURL}"></iframe>
+  
+  <script type="text/javascript">
+    var showConfig = ${showConfig};
+  	
+    function displayIframes() {
+      document.querySelector("#configFrame").style.display = showConfig ? "block" : "none";
+      document.querySelector("#viewerFrame").style.display = showConfig ? "none" : "block";
+    }
+
+    Mousetrap.bind('ctrl+s', function(e) {
+      showConfig = !showConfig;
+      displayIframes();
+    });
+    
+    displayIframes();
+  </script>
+</body>
+</html>

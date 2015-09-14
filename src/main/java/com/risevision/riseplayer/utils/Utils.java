@@ -5,11 +5,14 @@
 package com.risevision.riseplayer.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
@@ -113,7 +116,9 @@ public class Utils {
 		
 	    //Windows: chrome.exe --kiosk --no-default-browser-check --noerrdialogs --no-message-box --disable-desktop-notifications --allow-running-insecure-content --user-data-dir="$INSTDIR\data" ${ViewerURL}$DisplayId'
 		//Linux:       chrome --kiosk --no-default-browser-check --noerrdialogs --no-message-box --disable-desktop-notifications --allow-running-insecure-content --disk-cache-dir=$HOME/$CACHE_PATH --user-data-dir=$HOME/$CONFIG_PATH "$VIEWER_URL" 
-
+	  
+	  createPlayerLocalIndexPage();
+	  
 		if (Config.isWindows) {
 			if(isExtenedModeEnabed()) {
 				int viewerDimensions[] = WindowUtils.getExtendedScreenSize();
@@ -198,7 +203,7 @@ public class Utils {
 		cmd.add("--always-authorize-plugins"); //this is for Java applets
 		cmd.add("--allow-outdated-plugins");   //this is for Java applets
 		cmd.add("--user-data-dir=" + Config.getChromeDataPath());
-		cmd.add(Config.getViewerUrl());
+		cmd.add(Config.getPlayerLocalIndexUrl());
 
 		String[] sa = new String[cmd.size()];
 		cmd.toArray(sa);
@@ -381,6 +386,67 @@ public class Utils {
 	public static void setFlag_ClearCacheAfterReboot() {
 		saveToFile(Config.getClearCacheFilePath(), "");		
 	}
+	
+	public static void createPlayerLocalIndexPage() {
+	  String template = readResource("/index-template.html");
+	  
+	  template = template.replace("${viewerURL}", Config.getViewerUrl());
+	  template = template.replace("${playerServerURL}", "http://localhost:" + Config.basePort);
+	  template = template.replace("${showConfig}", "true");
+	  
+	  saveToFile(Config.appPath + File.separator + "index.html", template);
+	}
+  
+  public static String readFile(String fileName) {
+    File file = new File(fileName);
+    
+    try {
+      return new String(Files.readAllBytes(file.toPath()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  public static String readResource(String resourceName) {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(Utils.class.getResourceAsStream(resourceName)));
+    String content = "", line;
+    
+    try {
+      while((line = reader.readLine()) != null) {
+        content += line + System.lineSeparator();
+      }
+      
+      return content;
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  public static byte[] readResourceBytes(String resourceName) {
+    try {
+      InputStream stream = Utils.class.getResourceAsStream(resourceName);
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      byte buffer[] = new byte[1024];
+      int bytes;
+      
+      if(stream != null) {
+        while((bytes = stream.read(buffer)) != -1) {
+          bos.write(buffer, 0, bytes);
+        }
+        
+        stream.close();
+        
+        return bos.toByteArray();
+      }
+      else {
+        return null;
+      }
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
 	public static void saveToFile(String fileName, String txt) {
 		PrintWriter out;
@@ -455,23 +521,4 @@ public class Utils {
 	    		file.delete();
 	    	}
 	    }
-	
-//	private static String readFile(String fileName) {
-//		String lineSeparator = System.getProperty("line.separator");
-//		String res = "";
-//		File file = new File(fileName);
-//		if (file.exists()) {
-//			try {
-//				List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-//				if (lines != null && lines.size() > 0) {
-//					for (String line : lines) {
-//						res += (res.length() > 0 ? lineSeparator : "") + line;
-//					}
-//				}
-//			} catch (IOException e) {
-//			}
-//		}
-//		return res;
-//	}
-
 }

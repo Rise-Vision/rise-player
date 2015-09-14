@@ -178,6 +178,7 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 			boolean isReboot = fname.startsWith("reboot");
 			boolean isShutdown = fname.startsWith("shutdown");
 			boolean isVersion = fname.startsWith("version");
+			boolean isConfig = fname.startsWith("config");
 						
 			if (isPing) {
 				String callback = queryMap.get("callback");
@@ -272,6 +273,17 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 			} else if (isCrossDomain) {
 				HttpUtils.printHeadersCommon(ps, CONTENT_TYPE_TEXT_XML, Globals.CROSSDOMAIN_XML.length());
 				ps.print(Globals.CROSSDOMAIN_XML);
+      } else if (isConfig) {
+        String fileName = fname.indexOf("?") >= 0 ? fname.substring(0, fname.indexOf("?")) : fname;
+        byte content[] = Utils.readResourceBytes("/" + fileName);
+        
+        if(content != null) {
+          HttpUtils.printHeadersCommon(ps, CONTENT_TYPE_TEXT_HTML, content.length);
+          ps.write(content);
+        }
+        else {
+          HttpUtils.printHeader_ResponseCode(HTTP_NOT_FOUND_TEXT, ps, true);
+        }
 			} else {
 				HttpUtils.printHeader_ResponseCode(HTTP_BAD_REQUEST_TEXT, ps, true);
 			}
