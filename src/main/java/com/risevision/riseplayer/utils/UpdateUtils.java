@@ -1,19 +1,9 @@
 package com.risevision.riseplayer.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Properties;
+import java.io.*;
+import java.net.*;
+import java.text.*;
+import java.util.*;
 
 import com.risevision.riseplayer.Config;
 import com.risevision.riseplayer.Log;
@@ -31,8 +21,9 @@ public class UpdateUtils {
   
   public void restartIfUpdateAvailable() {
     Properties remoteComponents = getRemoteComponentsVersions();
-    boolean updatesOnStable = componentUpdatesAvailable(remoteComponents, STABLE_CHANNEL);
-    boolean updatesOnLatest = componentUpdatesAvailable(remoteComponents, LATEST_CHANNEL);
+    boolean includeBrowser = isBrowserUpgradeable();
+    boolean updatesOnStable = componentUpdatesAvailable(remoteComponents, STABLE_CHANNEL, includeBrowser);
+    boolean updatesOnLatest = componentUpdatesAvailable(remoteComponents, LATEST_CHANNEL, includeBrowser);
     boolean forceStable = remoteComponents.getProperty(FORCE_STABLE).equals("true");
     // Restart the player only if forceStable was requested and local does not match Stable, or if neither Stable or Latest match local
     boolean updatesAvailable = forceStable ? updatesOnStable : (updatesOnStable && updatesOnLatest);
@@ -84,16 +75,27 @@ public class UpdateUtils {
     }
   }
   
-  protected boolean componentUpdatesAvailable(Properties remoteComponents, String channel) {
-    String remoteNames[] = new String[] { "InstallerVersion", "BrowserVersion" + channel, "CacheVersion" + channel, "JavaVersion" + channel, "PlayerVersion" + channel };
-    String localNames[] = new String[] { "installer", "chromium", "RiseCache", "java", "RisePlayer" };
+  protected boolean componentUpdatesAvailable(Properties remoteComponents, String channel, boolean includeBrowser) {
+    Map<String, String> componentNames = new HashMap<String, String>();
+    componentNames.put("InstallerVersion", "installer");
+    componentNames.put("CacheVersion" + channel, "RiseCache");
+    componentNames.put("JavaVersion" + channel, "java");
+    componentNames.put("PlayerVersion" + channel, "RisePlayer");
+
+    if (includeBrowser) {
+      componentNames.put("BrowserVersion" + channel, "chromium");
+    }
+
     boolean versionsMatch = true;
     
-    for(int i = 0; i < remoteNames.length; i++) {
-      String remote = remoteComponents.getProperty(remoteNames[i]);
-      String local = getInstalledComponentVersion(localNames[i]);
+    for(String remoteName : componentNames.keySet()) {
+      String remoteVersion = remoteComponents.getProperty(remoteName);
+      String installedName = componentNames.get(remoteName);
+      String installedVersion = getInstalledComponentVersion(installedName);
       
-      if(!(remote != null && local != null && remote.equals(local))) {
+      if(remoteVersion == null || 
+      installedVersion == null ||
+      !remoteVersion.equals(installedVersion)) {
         versionsMatch = false;
         break;
       }
@@ -207,6 +209,33 @@ public class UpdateUtils {
     }
     catch (Exception e) {
       Log.error("Error checking access to remote resource: " + e.getMessage());
+      return false;
+    }    
+  }
+  
+  protected boolean isBrowserUpgradeable() {
+    String url = Config.coreBaseUrl +
+    "/player/isBrowserUpgradeable?displayId=" +
+    Config.displayId;
+
+    Log.info("Checking browser upgradeability at " + url);
+    try {
+      HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+      
+      if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        Log.info("Could not determine browser upgradeability - defaulting to true");
+        return true;
+      }
+
+      byte[] resultBytes = new byte[4];
+      int len = con.getInputStream().read(resultBytes);
+      String result = new String(resultBytes);
+      boolean upgradeable = result.equals("true".substring(0, len));
+      Log.info("Browser is " + (upgradeable ? "" : "not ") + "upgradeable");
+      return upgradeable;
+    }
+    catch (Exception e) {
+      Log.error("Error checking browser upgradeability: " + e.getMessage());
       return false;
     }    
   }
