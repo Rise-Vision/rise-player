@@ -10,6 +10,7 @@ import com.risevision.riseplayer.server.WebServer;
 import com.risevision.riseplayer.timers.DisplayErrorsTimer;
 import com.risevision.riseplayer.timers.HeartbeatTimer;
 import com.risevision.riseplayer.utils.Utils;
+import com.risevision.riseplayer.externallogger.*;
 
 public class Main {
 
@@ -25,6 +26,7 @@ public class Main {
 		Config.loadDisplayProperties();
 		DisplayErrors.getInstance().loadErrorsFromFile();		
 		
+                ExternalLogger.logExternal(InsertSchema.withEvent("startup"));
 		try {
 			//use socket to test if another instance is running
 			java.net.ServerSocket ss = WebServer.createServerSocket();// new java.net.ServerSocket(Config.basePort); 
