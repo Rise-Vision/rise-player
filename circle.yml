@@ -1,3 +1,6 @@
+test:
+  override:
+    - mvn test
 deployment:
   staging:
     branch: /(feature|fix|chore).*/
