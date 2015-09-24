@@ -211,7 +211,16 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 				HttpUtils.printHeadersCommon(ps, CONTENT_TYPE_TEXT_PLAIN, Config.upgradeInfo.length());
 				ps.print(Config.upgradeInfo);
 			} else if (isSetProperty) {
-				
+                                if ("true".equalsIgnoreCase(queryMap.get("reboot_enabled"))) {
+                                  Config.setRestartTime(queryMap.get("reboot_time")); 
+                                }
+
+                                if ("off".equalsIgnoreCase(queryMap.get("display_command"))) {
+                                  Utils.displayStandby(false);
+				} else if ("on".equalsIgnoreCase(queryMap.get("display_command"))) {
+                                  Utils.displayStandby(true);
+                                }
+
 				if ("true".equalsIgnoreCase(queryMap.get("reboot_required"))) {
 					log("reboot_required received");
 					Utils.reboot();
@@ -221,14 +230,6 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 				} else if ("true".equalsIgnoreCase(queryMap.get("update_required"))) {
 					log("update_required received");
 					new UpdateUtils().restartIfUpdateAvailable(); 
-				} else	if ("true".equalsIgnoreCase(queryMap.get("reboot_enabled"))) {
-					Config.setRestartTime(queryMap.get("reboot_time")); //time to restart (not reboot)
-				} else	if ("off".equalsIgnoreCase(queryMap.get("display_command"))) {
-					//log("display displayStandby off received");
-					Utils.displayStandby(false);
-				} else	if ("on".equalsIgnoreCase(queryMap.get("display_command"))) {
-					//log("display displayStandby on received");
-					Utils.displayStandby(true);
 				}
 				
 				HttpUtils.printHeadersCommon(HTTP_OK_TEXT, ps);
