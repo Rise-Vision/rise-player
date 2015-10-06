@@ -10,5 +10,12 @@ deployment:
   production:
     branch: master
     commands:
-      #Copy generated JAR to correct destination
+      #Update Globals.APPLICATION_VERSION
+      #Copy generated JAR to install-versions....RisePlayer-2015...etc.jar
+      #Set metadata
+      #Set public
+      #Update components files
+      #Upload components files
+      ##set metadata
+      ##set public
       - echo $CIRCLE_BRANCH
