@@ -17,6 +17,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.risevision.riseplayer.externallogger.ExternalLogger;
+import com.risevision.riseplayer.externallogger.InsertSchema;
 import com.risevision.riseplayer.utils.Utils;
 
 public class DisplayErrors {
@@ -62,6 +64,8 @@ public class DisplayErrors {
 	  }
 		
 		if(sendToCore && !Config.displayId.isEmpty()) {
+			ExternalLogger.logExternal(InsertSchema.withEvent("report_errors_core"));
+		  
 			if(sendToCore(displayErrUrl + "id=" + Config.displayId + "&st=" + Integer.toString(errCode)))
 				updateError(errCode,-1);
 		}

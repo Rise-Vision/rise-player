@@ -5,13 +5,14 @@
 package com.risevision.riseplayer.server;
 
 import java.io.*;
-
 import java.net.*;
 import java.util.*;
 
 import com.risevision.riseplayer.Config;
 import com.risevision.riseplayer.Globals;
 import com.risevision.riseplayer.Log;
+import com.risevision.riseplayer.externallogger.ExternalLogger;
+import com.risevision.riseplayer.externallogger.InsertSchema;
 
 public class WebServer {
 
@@ -75,9 +76,11 @@ public class WebServer {
 			threads.addElement(w);
 		}
 
-		log("Server started");
-
 		ServerSocket ss = createServerSocket();//new ServerSocket(Config.basePort, -1,  InetAddress.getByName(null));
+
+		log("Server started");
+		ExternalLogger.logExternal(InsertSchema.withEvent("server_started"));
+    
 		try {
 			while (true) {
 

@@ -17,6 +17,8 @@ import java.util.Vector;
 import com.risevision.riseplayer.Config;
 import com.risevision.riseplayer.DisplayErrors;
 import com.risevision.riseplayer.Log;
+import com.risevision.riseplayer.externallogger.ExternalLogger;
+import com.risevision.riseplayer.externallogger.InsertSchema;
 
 public class Utils {
 			
@@ -29,12 +31,13 @@ public class Utils {
 		String[] shutdownCmdUbuntuRoot = new String[] {"shutdown", "-r", "0"};
 
 		String shutdownCmd[] = Config.isWindows ? shutdownCmdWindows : (Config.isLnxRoot ? shutdownCmdUbuntuRoot : shutdownCmdUbuntu);
+		
 		executeCommand(shutdownCmd, false);
 	}
 
 	public static void restart() {
 		
-		//just run Auto-Update script. 
+		//just run Auto-Update script.
 		runAutoUpdateScript();
 
 	}
@@ -157,8 +160,10 @@ public class Utils {
 		String[] sa = new String[cmd.size()];
 		cmd.toArray(sa);
 
+		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "chrome_app_windows"));
+    
 		executeCommand(sa, false);
-		
+
 	}
 
 	private static void run_extendedModeExe_Windows(int[] viewerDimensions) {
@@ -179,6 +184,8 @@ public class Utils {
 		String[] sa = new String[cmd.size()];
 		cmd.toArray(sa);
 
+		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "extended_mode_windows"));
+    
 		executeCommand(sa, false);
 		
 	}
@@ -203,6 +210,8 @@ public class Utils {
 		String[] sa = new String[cmd.size()];
 		cmd.toArray(sa);
 
+		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "open_page_windows"));
+    
 		executeCommand(sa, false);
 		
 	}
@@ -238,6 +247,9 @@ public class Utils {
 		} else {
 			sa = new String[] {"bash", "-c", cmd.toString()};
 		}
+		
+		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "open_page_linux"));
+    
 		executeCommand(sa, false);
 		
 	}
@@ -255,19 +267,22 @@ public class Utils {
 				"--app-id=" + Config.chromeAppId,
 				Config.getViewerPropertiesPath(),
 				"--enable-experimental-extension-apis"};
+		
+		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "packaged_app_" + (Config.isWindows ? "windows" : "linux")));
+    
 		executeCommand(cmd, false);
 		
 		System.out.println("Chrome started");
-
 		
 	}
 
 	public static void stopViewer() {
-
-		if (Config.isWindows)
+		if (Config.isWindows) {
 			killChrome_Windows();
-		else
+		}
+		else {
 			killChrome_Linux();
+		}
 	}
 
 	public static void killChrome_Linux() {

@@ -20,6 +20,8 @@ import java.util.Vector;
 import com.risevision.riseplayer.Config;
 import com.risevision.riseplayer.DisplayErrors;
 import com.risevision.riseplayer.Globals;
+import com.risevision.riseplayer.externallogger.ExternalLogger;
+import com.risevision.riseplayer.externallogger.InsertSchema;
 import com.risevision.riseplayer.timers.HeartbeatTimer;
 import com.risevision.riseplayer.utils.SystemInfo;
 import com.risevision.riseplayer.utils.UpdateUtils;
@@ -224,8 +226,10 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 				if ("true".equalsIgnoreCase(queryMap.get("reboot_required"))) {
 					log("reboot_required received");
 					Utils.reboot();
-				} else if ("true".equalsIgnoreCase(queryMap.get("restart_required"))) {
+				  ExternalLogger.logExternal(InsertSchema.withEvent("reboot_required"));
+				} else if ("true".equalsIgnoreCase(queryMap.get("restart_required_core"))) {
 					log("restart_required received");
+					ExternalLogger.logExternal(InsertSchema.withEvent("restart_required_core"));
 					Utils.restart();
 				} else if ("true".equalsIgnoreCase(queryMap.get("update_required"))) {
 					log("update_required received");
@@ -252,17 +256,21 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 				HttpUtils.printHeader_ResponseCode(HTTP_OK_TEXT, ps, true);
 				
 				if ("true".equals(restartViewer)) {
+				  ExternalLogger.logExternal(InsertSchema.withEvent("restart_core_save_property"));
 					Utils.restartViewer();
 				} 
 				
 			} else if (isRestart) {
 				log("restart command received");
+				ExternalLogger.logExternal(InsertSchema.withEvent("restart_requested_local"));
 				Utils.restart();
 			} else if (isReboot) {
 				log("reboot command received");
+				ExternalLogger.logExternal(InsertSchema.withEvent("reboot_requested_local"));
 				Utils.reboot();
 			} else if (isShutdown) {
 				log("shutdown command received");
+				ExternalLogger.logExternal(InsertSchema.withEvent("shutdown_requested_local"));
 				Utils.stopViewer();
 				DisplayErrors.getInstance().writeErrorsToFile();
 				System.exit(0);
