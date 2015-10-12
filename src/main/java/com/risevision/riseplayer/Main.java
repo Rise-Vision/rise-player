@@ -49,12 +49,12 @@ public class Main {
 
 		} catch (BindException e) {
 			Log.error("Cannot start application. Cannot open port " + Config.basePort + ". You can only run one instance of " + Globals.APPLICATION_NAME + ".");
-			ExternalLogger.logExternal(InsertSchema.withEvent("startup_failed_bind"));
+			ExternalLogger.logExternal(InsertSchema.withEvent("startup failed bind"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 		  e.printStackTrace();
 		  Log.error(e.getMessage());
-		  ExternalLogger.logExternal(InsertSchema.withEvent("application_crash", e.getMessage()));
+		  ExternalLogger.logExternal(InsertSchema.withEvent("application crash", e.getMessage()));
 		}
 
 	}

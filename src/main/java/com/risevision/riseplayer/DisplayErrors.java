@@ -64,7 +64,7 @@ public class DisplayErrors {
 	  }
 		
 		if(sendToCore && !Config.displayId.isEmpty()) {
-			ExternalLogger.logExternal(InsertSchema.withEvent("report_errors_core"));
+			ExternalLogger.logExternal(InsertSchema.withEvent("report errors core"));
 		  
 			if(sendToCore(displayErrUrl + "id=" + Config.displayId + "&st=" + Integer.toString(errCode)))
 				updateError(errCode,-1);

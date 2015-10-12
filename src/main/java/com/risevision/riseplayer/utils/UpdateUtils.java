@@ -48,7 +48,7 @@ public class UpdateUtils {
         
         if(attempts >= MAX_UPDATE_ATTEMPTS && lastCheck.getTime() + 24 * 60 * 60 * 1000 < new Date().getTime()) {
           Log.info("Resetting update attempts after 24hs since the last failed attempt");
-          ExternalLogger.logExternal(InsertSchema.withEvent("update_attempts_reset"));
+          ExternalLogger.logExternal(InsertSchema.withEvent("update attempts reset"));
           
           saveComponentsUpdateAttempts(1);
           Utils.runAutoUpdateScript();
@@ -56,7 +56,7 @@ public class UpdateUtils {
         else if(attempts < MAX_UPDATE_ATTEMPTS) {
           if(lastCheck.getTime() + (1 + Math.random()) * MINUTES_BETWEEN_UPDATE_ATTEMPTS * 60 * 1000 < new Date().getTime()) {
             Log.info("Attempting regular update #" + (attempts + 1));
-            ExternalLogger.logExternal(InsertSchema.withEvent("update_attempt", "#" + (attempts + 1)));
+            ExternalLogger.logExternal(InsertSchema.withEvent("update attempt", "#" + (attempts + 1)));
             
             saveComponentsUpdateAttempts(attempts + 1);
             Utils.runAutoUpdateScript();
@@ -67,12 +67,12 @@ public class UpdateUtils {
         }
         else {
           Log.warn("Maximum number of update attempts reached. Not restarting");
-          ExternalLogger.logExternal(InsertSchema.withEvent("update_attempts_max_reached"));
+          ExternalLogger.logExternal(InsertSchema.withEvent("update attempts max reached"));
         }
       }
       else {
         Log.warn("Could not access some of the remote components. Not restarting");
-        ExternalLogger.logExternal(InsertSchema.withEvent("components_list_fetch_failed"));
+        ExternalLogger.logExternal(InsertSchema.withEvent("components list fetch failed"));
       }
     }
     else {

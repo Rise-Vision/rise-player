@@ -160,7 +160,7 @@ public class Utils {
 		String[] sa = new String[cmd.size()];
 		cmd.toArray(sa);
 
-		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "chrome_app_windows"));
+		ExternalLogger.logExternal(InsertSchema.withEvent("start viewer", "chrome app windows"));
     
 		executeCommand(sa, false);
 
@@ -184,7 +184,7 @@ public class Utils {
 		String[] sa = new String[cmd.size()];
 		cmd.toArray(sa);
 
-		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "extended_mode_windows"));
+		ExternalLogger.logExternal(InsertSchema.withEvent("start viewer", "extended mode windows"));
     
 		executeCommand(sa, false);
 		
@@ -210,7 +210,7 @@ public class Utils {
 		String[] sa = new String[cmd.size()];
 		cmd.toArray(sa);
 
-		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "open_page_windows"));
+		ExternalLogger.logExternal(InsertSchema.withEvent("start viewer", "open page windows"));
     
 		executeCommand(sa, false);
 		
@@ -248,7 +248,7 @@ public class Utils {
 			sa = new String[] {"bash", "-c", cmd.toString()};
 		}
 		
-		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "open_page_linux"));
+		ExternalLogger.logExternal(InsertSchema.withEvent("start viewer", "open page linux"));
     
 		executeCommand(sa, false);
 		
@@ -268,7 +268,7 @@ public class Utils {
 				Config.getViewerPropertiesPath(),
 				"--enable-experimental-extension-apis"};
 		
-		ExternalLogger.logExternal(InsertSchema.withEvent("start_viewer", "packaged_app_" + (Config.isWindows ? "windows" : "linux")));
+		ExternalLogger.logExternal(InsertSchema.withEvent("start viewer", "packaged app " + (Config.isWindows ? "windows" : "linux")));
     
 		executeCommand(cmd, false);
 		

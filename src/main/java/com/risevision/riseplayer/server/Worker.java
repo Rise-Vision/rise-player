@@ -226,10 +226,10 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 				if ("true".equalsIgnoreCase(queryMap.get("reboot_required"))) {
 					log("reboot_required received");
 					Utils.reboot();
-				  ExternalLogger.logExternal(InsertSchema.withEvent("reboot_required"));
+				  ExternalLogger.logExternal(InsertSchema.withEvent("reboot required"));
 				} else if ("true".equalsIgnoreCase(queryMap.get("restart_required_core"))) {
 					log("restart_required received");
-					ExternalLogger.logExternal(InsertSchema.withEvent("restart_required_core"));
+					ExternalLogger.logExternal(InsertSchema.withEvent("restart required received"));
 					Utils.restart();
 				} else if ("true".equalsIgnoreCase(queryMap.get("update_required"))) {
 					log("update_required received");
@@ -256,21 +256,21 @@ class Worker extends WebServer implements HttpConstants, Runnable {
 				HttpUtils.printHeader_ResponseCode(HTTP_OK_TEXT, ps, true);
 				
 				if ("true".equals(restartViewer)) {
-				  ExternalLogger.logExternal(InsertSchema.withEvent("restart_core_save_property"));
+				  ExternalLogger.logExternal(InsertSchema.withEvent("restart core save property"));
 					Utils.restartViewer();
 				} 
 				
 			} else if (isRestart) {
 				log("restart command received");
-				ExternalLogger.logExternal(InsertSchema.withEvent("restart_requested_local"));
+				ExternalLogger.logExternal(InsertSchema.withEvent("local restart requested"));
 				Utils.restart();
 			} else if (isReboot) {
 				log("reboot command received");
-				ExternalLogger.logExternal(InsertSchema.withEvent("reboot_requested_local"));
+				ExternalLogger.logExternal(InsertSchema.withEvent("local reboot requested"));
 				Utils.reboot();
 			} else if (isShutdown) {
 				log("shutdown command received");
-				ExternalLogger.logExternal(InsertSchema.withEvent("shutdown_requested_local"));
+				ExternalLogger.logExternal(InsertSchema.withEvent("local shutdown requested"));
 				Utils.stopViewer();
 				DisplayErrors.getInstance().writeErrorsToFile();
 				System.exit(0);

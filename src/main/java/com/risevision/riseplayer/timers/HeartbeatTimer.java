@@ -25,7 +25,7 @@ public class HeartbeatTimer {
 			if ((lastHearbeat.getTime() + Globals.MAX_HEARTBEAT_GAP_MS) < now.getTime()) {
 				if ((lastHearbeat.getTime() + (Globals.MAX_HEARTBEAT_GAP_MS * 3)) < now.getTime()) {
 					Log.error("Rise Viewer is not responding, clearing the browser cache and starting the viewer.");
-					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat_clean_restart"));
+					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat clean restart"));
 					
 					//DisplayErrors.getInstance().viewerNotResponding(1);
 					Utils.cleanChromeCache();
@@ -33,7 +33,7 @@ public class HeartbeatTimer {
 					Utils.restartViewer();
 				}
 				else {
-					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat_restart"));
+					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat restart"));
 				  
 					Utils.restartViewer();
 				}

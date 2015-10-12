@@ -79,7 +79,7 @@ public class WebServer {
 		ServerSocket ss = createServerSocket();//new ServerSocket(Config.basePort, -1,  InetAddress.getByName(null));
 
 		log("Server started");
-		ExternalLogger.logExternal(InsertSchema.withEvent("server_started"));
+		ExternalLogger.logExternal(InsertSchema.withEvent("server started"));
     
 		try {
 			while (true) {

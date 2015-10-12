@@ -21,7 +21,7 @@ public class RestartTimer {
 	static class OnTimerTask extends TimerTask {
 		@Override
 		public void run() {
-			ExternalLogger.logExternal(InsertSchema.withEvent("timer_restart"));
+			ExternalLogger.logExternal(InsertSchema.withEvent("timer restart"));
 		  
 			Utils.setFlag_ClearCacheAfterReboot();
 			Utils.reboot();
