@@ -9,6 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.risevision.riseplayer.Config;
+import com.risevision.riseplayer.externallogger.ExternalLogger;
+import com.risevision.riseplayer.externallogger.InsertSchema;
 import com.risevision.riseplayer.utils.Utils;
 
 public class RestartTimer {
@@ -19,6 +21,8 @@ public class RestartTimer {
 	static class OnTimerTask extends TimerTask {
 		@Override
 		public void run() {
+			ExternalLogger.logExternal(InsertSchema.withEvent("timer restart"));
+		  
 			Utils.setFlag_ClearCacheAfterReboot();
 			Utils.reboot();
 		}

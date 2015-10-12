@@ -1,7 +1,13 @@
 package com.risevision.riseplayer.externallogger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
 import com.google.gson.Gson;
-import com.risevision.riseplayer.*;
+import com.risevision.riseplayer.Config;
+import com.risevision.riseplayer.Globals;
 
 public class InsertSchema {
   String kind = "bigquery#tableDataInsertAllRequest";
@@ -40,6 +46,10 @@ public class InsertSchema {
 
   public static InsertSchema withEvent(String event) {
     return InsertSchema.initialize().setEvent(event);
+  }
+
+  public static InsertSchema withEvent(String event, String details) {
+    return InsertSchema.initialize().setEvent(event).setEventDetails(details);
   }
 
   public InsertSchema setEvent(String event) {

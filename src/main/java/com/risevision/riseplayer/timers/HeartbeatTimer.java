@@ -10,6 +10,8 @@ import java.util.TimerTask;
 
 import com.risevision.riseplayer.Globals;
 import com.risevision.riseplayer.Log;
+import com.risevision.riseplayer.externallogger.ExternalLogger;
+import com.risevision.riseplayer.externallogger.InsertSchema;
 import com.risevision.riseplayer.utils.Utils;
 
 public class HeartbeatTimer {
@@ -23,13 +25,18 @@ public class HeartbeatTimer {
 			if ((lastHearbeat.getTime() + Globals.MAX_HEARTBEAT_GAP_MS) < now.getTime()) {
 				if ((lastHearbeat.getTime() + (Globals.MAX_HEARTBEAT_GAP_MS * 3)) < now.getTime()) {
 					Log.error("Rise Viewer is not responding, clearing the browser cache and starting the viewer.");
+					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat clean restart"));
+					
 					//DisplayErrors.getInstance().viewerNotResponding(1);
 					Utils.cleanChromeCache();
 					Utils.cleanChromeData();
 					Utils.restartViewer();
 				}
-				else
+				else {
+					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat restart"));
+				  
 					Utils.restartViewer();
+				}
 			} else {
 				//DisplayErrors.getInstance().viewerNotResponding(-1);
 			}

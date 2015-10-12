@@ -1,9 +1,14 @@
 package com.risevision.riseplayer.externallogger;
 
-import java.net.*;
-import java.util.*;
-import java.util.regex.*;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+import com.risevision.riseplayer.Log;
 
 public class ExternalLogger {
   private static final String logUrl = "https://www.googleapis.com/bigquery/v2/" +
@@ -13,7 +18,7 @@ public class ExternalLogger {
     try {
       Token.update();
     } catch (IOException e) {
-      throw new RuntimeException(e.getMessage());
+      Log.error("External logger token update: " + e.getMessage());
     }
 
     if (schema.getEvent() == null || schema.getEvent().equals("")) {
@@ -35,21 +40,17 @@ public class ExternalLogger {
       }
       conn.getInputStream().close();
     } catch (IOException e) {
-      throw new RuntimeException(e.getMessage());
+      Log.error("External logger event save: " + e.getMessage());
     }
   }
 
-  private static URL getUrl() {
-    URL url;
+  private static URL getUrl() throws IOException {
     java.text.SimpleDateFormat fmt;
     fmt = new java.text.SimpleDateFormat("yyyyMMdd");
     fmt.setCalendar(Calendar.getInstance(TimeZone.getTimeZone("GMT")));
 
     String dt = fmt.format(new Date());
-    try {
-      return new URL(logUrl.replace("TABLE_ID", "events" + dt));
-    } catch (IOException e) {
-      throw new RuntimeException(e.getMessage());
-    }
+    
+    return new URL(logUrl.replace("TABLE_ID", "events" + dt));
   }
 }
