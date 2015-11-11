@@ -34,7 +34,7 @@ public class Main {
 						
 			ss.close();
 
-			HeartbeatTimer.start();
+			if (!Config.viewerHeartBeatOverride.equals("true")) {HeartbeatTimer.start();}
 			
 			DisplayErrorsTimer.start();
 			
