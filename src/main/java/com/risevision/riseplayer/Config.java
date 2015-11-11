@@ -32,6 +32,7 @@ public class Config {
 	private static final String PROPERTY_VIEWER_URL = "viewerurl";
 	private static final String PROPERTY_CORE_URL = "coreurl";
 	private static final String PROPERTY_RESTART_OVERRIDE = "restartoverride";
+	private static final String PROPERTY_VIEWER_HEARTBEAT_OVERRIDE = "heartbeatoverride";
 	
 	public static final String CHROME_PREFERENCES = "{\"countryid_at_install\":0,\"default_search_provider\":{\"enabled\":false},\"geolocation\":{\"default_content_setting\":1},\"profile\":{\"content_settings\":{\"pref_version\":1},\"default_content_settings\":{\"geolocation\": 1},\"exited_cleanly\":true}}";
 	
@@ -46,6 +47,7 @@ public class Config {
 	public static String viewerBaseUrl = Globals.VIEWER_BASE_URL;
 	public static String coreBaseUrl = Globals.CORE_BASE_URL;
 	public static String restartOverride = "false";
+	public static String viewerHeartBeatOverride = "false";
 	
 	public static boolean isWindows;
 	public static boolean isLnxRoot = false;
@@ -236,6 +238,7 @@ public class Config {
 				viewerBaseUrl = getPropertyStr(PROPERTY_VIEWER_URL, Globals.VIEWER_BASE_URL, displayProps);
 				coreBaseUrl = getPropertyStr(PROPERTY_CORE_URL, Globals.CORE_BASE_URL, displayProps);
 				restartOverride = getPropertyStr(PROPERTY_RESTART_OVERRIDE, "false", displayProps);
+				viewerHeartBeatOverride = getPropertyStr(PROPERTY_VIEWER_HEARTBEAT_OVERRIDE, "false", displayProps);
 			} else {
 				Log.info("Display properties file is not found. Using default setting. File name: " + f.getName());
 			}
