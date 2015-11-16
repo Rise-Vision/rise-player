@@ -191,20 +191,21 @@ public class Utils {
 	}
 	
 	private static void startViewer_OpenPage_Windows() {
-		
 		Vector<String> cmd = new Vector<>();
 		
-		cmd.add(Config.chromePath);
-		cmd.add("--kiosk");
-		cmd.add("--no-default-browser-check");
-		cmd.add("--noerrdialogs");
-    cmd.add("--no-first-run");
-		cmd.add("--no-message-box");
-		cmd.add("--disable-desktop-notifications");
-		cmd.add("--allow-running-insecure-content");
-		cmd.add("--always-authorize-plugins"); //this is for Java applets
-		cmd.add("--allow-outdated-plugins");   //this is for Java applets
-		cmd.add("--user-data-dir=" + Config.getChromeDataPath());
+    cmd.add(Config.chromePath);
+		
+    // Split the arguments string into individual array elements
+    for(String argument : (" " + Config.browserArguments).split(" --")) {
+      if(!argument.trim().equals("")) {
+        cmd.add("--" + argument);
+      }
+    }
+    
+    if(!Config.ignoreBrowserPaths) {
+      cmd.add("--user-data-dir=" + Config.getChromeDataPath());
+    }
+		
 		cmd.add(Config.getViewerUrl());
 
 		String[] sa = new String[cmd.size()];
@@ -213,7 +214,6 @@ public class Utils {
 		ExternalLogger.logExternal(InsertSchema.withEvent("start viewer", "open page windows"));
     
 		executeCommand(sa, false);
-		
 	}
 
 	private static void startViewer_OpenPage_Linux() {
@@ -221,23 +221,16 @@ public class Utils {
 		StringBuilder cmd = new StringBuilder();
 		
 		cmd.append("'" + Config.chromePath + "'");
-		cmd.append(" --kiosk");
-		cmd.append(" --no-default-browser-check");
-		cmd.append(" --noerrdialogs");
-    cmd.append(" --no-first-run");
-		cmd.append(" --no-message-box");
-		cmd.append(" --disable-desktop-notifications");
-		cmd.append(" --allow-running-insecure-content");
-		cmd.append(" --always-authorize-plugins"); //this is for Java applets
-		cmd.append(" --allow-outdated-plugins");   //this is for Java applets
-		cmd.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
-		cmd.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
-		cmd.append(" --touch-devices=$(xinput list | grep Touchscreen | awk 'match($0, /id=/){print substr($0, RSTART+3, RLENGTH-1)}')");
-		cmd.append(" --touch-events=enabled");
-		cmd.append(" --enable-pinch");
+    cmd.append(" ");
+    cmd.append(Config.browserArguments);
+		
+    if(!Config.ignoreBrowserPaths) {
+      cmd.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
+      cmd.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
+    }
 		
 		cmd.append(" '" + Config.getViewerUrl() + "'");
-
+		
 		//output result into chromium.log file
 		cmd.append(" > '" + Config.getChromeLogFilePath() + "' 2>&1");
 
@@ -251,7 +244,6 @@ public class Utils {
 		ExternalLogger.logExternal(InsertSchema.withEvent("start viewer", "open page linux"));
     
 		executeCommand(sa, false);
-		
 	}
 
 	public static void startViewer_StartPackagedApp() {
