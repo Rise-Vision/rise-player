@@ -202,10 +202,6 @@ public class Utils {
       }
     }
     
-    if(!Config.ignoreBrowserPaths) {
-      cmd.add("--user-data-dir=" + Config.getChromeDataPath());
-    }
-		
 		cmd.add(Config.getViewerUrl());
 
 		String[] sa = new String[cmd.size()];
@@ -223,12 +219,6 @@ public class Utils {
 		cmd.append("'" + Config.chromePath + "'");
     cmd.append(" ");
     cmd.append(Config.browserArguments);
-		
-    if(!Config.ignoreBrowserPaths) {
-      cmd.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
-      cmd.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
-    }
-		
 		cmd.append(" '" + Config.getViewerUrl() + "'");
 		
 		//output result into chromium.log file

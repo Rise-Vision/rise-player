@@ -36,7 +36,6 @@ public class Config {
 	private static final String PROPERTY_RESTART_OVERRIDE = "restartoverride";
 	private static final String PROPERTY_VIEWER_HEARTBEAT_OVERRIDE = "heartbeatoverride";
 	private static final String PROPERTY_BROWSER_ARGUMENTS = "browserarguments";
-	private static final String PROPERTY_IGNORE_BROWSER_PATHS = "ignorebrowserpaths";
 	
 	public static final String CHROME_PREFERENCES = "{\"countryid_at_install\":0,\"default_search_provider\":{\"enabled\":false},\"geolocation\":{\"default_content_setting\":1},\"profile\":{\"content_settings\":{\"pref_version\":1},\"default_content_settings\":{\"geolocation\": 1},\"exited_cleanly\":true}}";
 	
@@ -67,7 +66,6 @@ public class Config {
 	public static String chromePath;
 	public static String chromeAppId = null;
 	public static String browserArguments = "";
-	public static boolean ignoreBrowserPaths = false;
 	
 	private static Properties appProps = new Properties();
 	private static Properties displayProps = new Properties();
@@ -235,8 +233,6 @@ public class Config {
 		try {
 			File f = new File(appPath, fileName);
 			
-			browserArguments = getDefaultBrowserArguments();
-      
 			if (f.exists()) {
 				displayProps = loadPropertiesFile(f);
 				
@@ -248,13 +244,14 @@ public class Config {
 				restartOverride = getPropertyStr(PROPERTY_RESTART_OVERRIDE, "false", displayProps);
 				viewerHeartBeatOverride = getPropertyStr(PROPERTY_VIEWER_HEARTBEAT_OVERRIDE, "false", displayProps);
 				browserArguments = getPropertyStr(PROPERTY_BROWSER_ARGUMENTS, "", displayProps);
-				ignoreBrowserPaths = getPropertyStr(PROPERTY_IGNORE_BROWSER_PATHS, "false", displayProps).equals("true");
 				
 				if(!displayProps.containsKey(PROPERTY_BROWSER_ARGUMENTS)) {
-				  saveDisplayProperties();
+					browserArguments = getDefaultBrowserArguments();
+					saveDisplayProperties();
 				}
 			} else {
 				Log.info("Display properties file is not found. Using default setting. File name: " + f.getName());
+				browserArguments = getDefaultBrowserArguments();
 				saveDisplayProperties();
 			}
 			
@@ -303,7 +300,6 @@ public class Config {
 		builder.append("claimid=" + claimId + "\r\n");
 		builder.append("viewerurl=" + viewerBaseUrl + "\r\n");
 		builder.append("coreurl=" + coreBaseUrl + "\r\n");
-		builder.append("ignorebrowserpaths=" + ignoreBrowserPaths + "\r\n");
 		
     for(String browserArgument : (" " + Config.browserArguments).split(" --")) {
       if(!browserArgument.trim().equals("")) {
@@ -327,6 +323,7 @@ public class Config {
 	    builder.append(" --allow-running-insecure-content");
 	    builder.append(" --always-authorize-plugins"); //this is for Java applets
 	    builder.append(" --allow-outdated-plugins");   //this is for Java applets
+	    builder.append(" --user-data-dir=" + Config.getChromeDataPath());
 	  }
 	  else {
 	    builder.append(" --kiosk");
@@ -343,6 +340,8 @@ public class Config {
 	    builder.append(" --enable-pinch");
 	    builder.append(" --disable-setuid-sandbox");
 	    builder.append(" --test-type=browser");
+	    builder.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
+	    builder.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
 	  }
 
 	  return builder.toString();
