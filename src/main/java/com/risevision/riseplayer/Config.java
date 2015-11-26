@@ -9,8 +9,10 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -33,6 +35,7 @@ public class Config {
 	private static final String PROPERTY_CORE_URL = "coreurl";
 	private static final String PROPERTY_RESTART_OVERRIDE = "restartoverride";
 	private static final String PROPERTY_VIEWER_HEARTBEAT_OVERRIDE = "heartbeatoverride";
+	private static final String PROPERTY_BROWSER_ARGUMENTS = "browserarguments";
 	
 	public static final String CHROME_PREFERENCES = "{\"countryid_at_install\":0,\"default_search_provider\":{\"enabled\":false},\"geolocation\":{\"default_content_setting\":1},\"profile\":{\"content_settings\":{\"pref_version\":1},\"default_content_settings\":{\"geolocation\": 1},\"exited_cleanly\":true}}";
 	
@@ -62,6 +65,7 @@ public class Config {
 	public static String claimId = "";
 	public static String chromePath;
 	public static String chromeAppId = null;
+	public static String browserArguments = "";
 	
 	private static Properties appProps = new Properties();
 	private static Properties displayProps = new Properties();
@@ -228,10 +232,10 @@ public class Config {
 		String fileName = FILE_DISPLAY_PROPERTIES;
 		try {
 			File f = new File(appPath, fileName);
+			
 			if (f.exists()) {
-				InputStream is = new BufferedInputStream(new FileInputStream(f));
-				displayProps.load(is);
-				is.close();
+				displayProps = loadPropertiesFile(f);
+				
 				Log.info("Loading display properties...");
 				displayId = getPropertyStr(PROPERTY_DISPLAY_ID, "", displayProps);
 				claimId = getPropertyStr(PROPERTY_CLAIM_ID, "", displayProps);
@@ -239,19 +243,108 @@ public class Config {
 				coreBaseUrl = getPropertyStr(PROPERTY_CORE_URL, Globals.CORE_BASE_URL, displayProps);
 				restartOverride = getPropertyStr(PROPERTY_RESTART_OVERRIDE, "false", displayProps);
 				viewerHeartBeatOverride = getPropertyStr(PROPERTY_VIEWER_HEARTBEAT_OVERRIDE, "false", displayProps);
+				browserArguments = getPropertyStr(PROPERTY_BROWSER_ARGUMENTS, "", displayProps);
+				
+				if(!displayProps.containsKey(PROPERTY_BROWSER_ARGUMENTS)) {
+					browserArguments = getDefaultBrowserArguments();
+					saveDisplayProperties();
+				}
 			} else {
 				Log.info("Display properties file is not found. Using default setting. File name: " + f.getName());
+				browserArguments = getDefaultBrowserArguments();
+				saveDisplayProperties();
 			}
 			
 		} catch (Exception e) {
 			Log.warn("Error loading display properties. File name: " + fileName + ". Error: " + e.getMessage());
 		}
 	}
+	
+	/**
+	 * Loads a properties file accumulating properties with the same name into a single key separated by spaces
+	 * @param file The file reference
+	 * @return The processed Properties object
+	 */
+	public static Properties loadPropertiesFile(File file) throws Exception {
+	  BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+	  Properties properties = new Properties();
+	  String line;
+	  
+	  while((line = bufferedReader.readLine()) != null) {
+	    int idx = line.indexOf("=");
+	    
+	    if(idx >= 0) {
+	      String key = line.substring(0, idx);
+	      String value = line.substring(idx + 1);
+	      
+	      if(!properties.containsKey(key)) {
+	        properties.setProperty(key, value);
+	      }
+	      else {
+	        properties.setProperty(key, properties.getProperty(key) + " " + value);
+	      }
+	    }
+	  }
+	  
+	  bufferedReader.close();
+	  
+	  return properties;
+	}
 
 	public static void saveDisplayProperties() {
 		String fileName = new File(appPath, FILE_DISPLAY_PROPERTIES).getPath();
-		String txt ="[RDNII]\r\ndisplayid="+displayId+"\r\nclaimid="+claimId+"\r\nviewerurl="+viewerBaseUrl+"\r\ncoreurl="+coreBaseUrl+"\r\n";
-		Utils.saveToFile(fileName, txt);
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("[RDNII]\r\n");
+		builder.append("displayid=" + displayId + "\r\n");
+		builder.append("claimid=" + claimId + "\r\n");
+		builder.append("viewerurl=" + viewerBaseUrl + "\r\n");
+		builder.append("coreurl=" + coreBaseUrl + "\r\n");
+		
+    for(String browserArgument : (" " + Config.browserArguments).split(" --")) {
+      if(!browserArgument.trim().equals("")) {
+        builder.append("browserarguments=--" + browserArgument + "\r\n");
+      }
+    }
+    
+		Utils.saveToFile(fileName, builder.toString());
+	}
+	
+	protected static String getDefaultBrowserArguments() {
+	  StringBuilder builder = new StringBuilder();
+	  
+	  if(Config.isWindows) {
+	    builder.append(" --kiosk");
+	    builder.append(" --no-default-browser-check");
+	    builder.append(" --noerrdialogs");
+	    builder.append(" --no-first-run");
+	    builder.append(" --no-message-box");
+	    builder.append(" --disable-desktop-notifications");
+	    builder.append(" --allow-running-insecure-content");
+	    builder.append(" --always-authorize-plugins"); //this is for Java applets
+	    builder.append(" --allow-outdated-plugins");   //this is for Java applets
+	    builder.append(" --user-data-dir=" + Config.getChromeDataPath());
+	  }
+	  else {
+	    builder.append(" --kiosk");
+	    builder.append(" --no-default-browser-check");
+	    builder.append(" --noerrdialogs");
+	    builder.append(" --no-first-run");
+	    builder.append(" --no-message-box");
+	    builder.append(" --disable-desktop-notifications");
+	    builder.append(" --allow-running-insecure-content");
+	    builder.append(" --always-authorize-plugins"); //this is for Java applets
+	    builder.append(" --allow-outdated-plugins");   //this is for Java applets
+	    builder.append(" --touch-devices=$(xinput list | grep Touchscreen | awk 'match($0, /id=/){print substr($0, RSTART+3, RLENGTH-1)}')");
+	    builder.append(" --touch-events=enabled");
+	    builder.append(" --enable-pinch");
+	    builder.append(" --disable-setuid-sandbox");
+	    builder.append(" --test-type=browser");
+	    builder.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
+	    builder.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
+	  }
+
+	  return builder.toString();
 	}
 
 //	public static void saveDisplayProperties() {
@@ -357,3 +450,4 @@ public class Config {
 		return extendedModeDelay;
 	}
 }
+  
