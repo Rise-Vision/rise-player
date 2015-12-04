@@ -323,6 +323,8 @@ public class Config {
 	    builder.append(" --allow-running-insecure-content");
 	    builder.append(" --always-authorize-plugins"); //this is for Java applets
 	    builder.append(" --allow-outdated-plugins");   //this is for Java applets
+	    builder.append(" --disable-session-crashed-bubble");
+	    builder.append(" --disable-infobars");
 	    builder.append(" --user-data-dir=" + Config.getChromeDataPath());
 	  }
 	  else {
@@ -338,6 +340,8 @@ public class Config {
 	    builder.append(" --touch-devices=$(xinput list | grep Touchscreen | awk 'match($0, /id=/){print substr($0, RSTART+3, RLENGTH-1)}')");
 	    builder.append(" --touch-events=enabled");
 	    builder.append(" --enable-pinch");
+	    builder.append(" --disable-session-crashed-bubble");
+	    builder.append(" --disable-infobars");
 	    builder.append(" --disable-setuid-sandbox");
 	    builder.append(" --test-type=browser");
 	    builder.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
