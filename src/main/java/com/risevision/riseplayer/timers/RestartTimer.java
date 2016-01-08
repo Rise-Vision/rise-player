@@ -15,38 +15,40 @@ import com.risevision.riseplayer.utils.Utils;
 
 public class RestartTimer {
 
-	private static Timer timer = null;
-	private static Date restartTime = null;
-	
-	static class OnTimerTask extends TimerTask {
-		@Override
-		public void run() {
-			ExternalLogger.logExternal(InsertSchema.withEvent("timer restart"));
-		  
-			Utils.setFlag_ClearCacheAfterReboot();
-			if (!Config.restartOverride.equals("true")) {Utils.reboot();}
-		}
-	}
+    private static Timer timer = null;
+    private static Date restartTime = null;
 
-	public static void restartIfTimeChanged() {
-		if (restartTime==null || !restartTime.equals(Config.getRestartTime())) {
-			stop();
-			start();
-		}
-	}
+    static class OnTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            ExternalLogger.logExternal(InsertSchema.withEvent("timer restart"));
 
-	public static void start() {
-		if (Config.getRestartTime() != null && Config.getRestartTime().after(new Date())) {
-			timer = new Timer();
-			timer.schedule(new OnTimerTask(), Config.getRestartTime());
-		}
-	}
+            Utils.setFlag_ClearCacheAfterReboot();
+            if (!Config.restartOverride.equals("true")) {
+                Utils.reboot();
+            }
+        }
+    }
 
-	public static void stop() {
-		if (timer != null) {
-			timer.cancel();
-			timer = null;
-		}
-	}
+    public static void restartIfTimeChanged() {
+        if (restartTime == null || !restartTime.equals(Config.getRestartTime())) {
+            stop();
+            start();
+        }
+    }
+
+    public static void start() {
+        if (Config.getRestartTime() != null && Config.getRestartTime().after(new Date())) {
+            timer = new Timer();
+            timer.schedule(new OnTimerTask(), Config.getRestartTime());
+        }
+    }
+
+    public static void stop() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
 
 }
