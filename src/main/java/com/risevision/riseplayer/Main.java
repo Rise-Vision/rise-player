@@ -27,7 +27,12 @@ public class Main {
         DisplayErrors.getInstance().loadErrorsFromFile();
 
         try {
-            ExternalLogger.logExternal(InsertSchema.withEvent("startup"));
+            if (Utils.isRestartFlagSet()) {
+                ExternalLogger.logExternal(InsertSchema.withEvent("startup", "from restart"));
+                Utils.unsetFlag_RestartingPlayer();
+            } else {
+                ExternalLogger.logExternal(InsertSchema.withEvent("startup"));
+            }
 
             //use socket to test if another instance is running
             java.net.ServerSocket ss = WebServer.createServerSocket();// new java.net.ServerSocket(Config.basePort);

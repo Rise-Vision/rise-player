@@ -21,8 +21,6 @@ public class WebServer {
         UNKNOWN, CONTENT, CONFIGURATION
     }
 
-    ;
-
     /* print to stdout */
     protected static void p(String s) {
         System.out.println(s);

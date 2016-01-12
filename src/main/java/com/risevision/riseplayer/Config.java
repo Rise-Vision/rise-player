@@ -194,6 +194,8 @@ public class Config {
         return appPath + File.separator + "clear_cache";
     }
 
+    public static String getRestartFlagPath() { return appPath + File.separator + "player_restarting"; }
+
     public static String getExtendedModeFile() {
         if (isWindows)
             return appPath + File.separator + extendedModeExe;

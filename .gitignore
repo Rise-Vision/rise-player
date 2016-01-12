@@ -12,3 +12,6 @@ buildNumber.properties
 .classpath
 .externalToolBuilders/
 .settings/
+
+#Idea
+/riseplayer.iml

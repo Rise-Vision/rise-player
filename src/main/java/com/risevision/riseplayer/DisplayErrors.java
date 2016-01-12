@@ -96,7 +96,6 @@ public class DisplayErrors {
             }
 
             retStatus = true;
-            ;
         } catch (ConnectException e) {
             e.printStackTrace();
             Log.error(e.getMessage());

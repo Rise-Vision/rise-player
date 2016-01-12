@@ -36,8 +36,6 @@ public class Log {
                 public String format(LogRecord record) {
                     return sdf.format(new Date()) + " " + record.getLevel() + ": " + record.getMessage() + "\r\n";
                 }
-
-                ;
             };
 
             fh.setFormatter(myFormatter);

@@ -37,6 +37,8 @@ public class Utils {
 
     public static void restart() {
 
+        //set restarting flag so we can track successful restarts
+        Utils.setFlag_RestartingPlayer();
         //just run Auto-Update script.
         runAutoUpdateScript();
 
@@ -374,6 +376,20 @@ public class Utils {
 
     public static void setFlag_ClearCacheAfterReboot() {
         saveToFile(Config.getClearCacheFilePath(), "");
+    }
+
+    public static void setFlag_RestartingPlayer() {
+        saveToFile(Config.getRestartFlagPath(), "");
+    }
+
+    public static void unsetFlag_RestartingPlayer() {
+        File f = new File(Config.getRestartFlagPath(), "");
+        f.delete();
+    }
+
+    public static boolean isRestartFlagSet() {
+        File f = new File(Config.getRestartFlagPath());
+        return f.exists() && !f.isDirectory();
     }
 
     public static void saveToFile(String fileName, String txt) {
