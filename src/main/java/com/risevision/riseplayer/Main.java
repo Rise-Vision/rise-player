@@ -14,49 +14,56 @@ import com.risevision.riseplayer.externallogger.*;
 
 public class Main {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-				
-		Config.init(Main.class);
-		Log.init(Config.appPath, Globals.APPLICATION_NAME);
-		Log.info("***** " + Globals.APPLICATION_NAME +" version " + Globals.APPLICATION_VERSION + " *****");
-		Config.loadApplicationProperties();
-		Config.loadDisplayProperties();
-		DisplayErrors.getInstance().loadErrorsFromFile();		
-		
-		try {
-			ExternalLogger.logExternal(InsertSchema.withEvent("startup"));
-      
-			//use socket to test if another instance is running
-			java.net.ServerSocket ss = WebServer.createServerSocket();// new java.net.ServerSocket(Config.basePort); 
-						
-			ss.close();
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
 
-			if (!Config.viewerHeartBeatOverride.equals("true")) {HeartbeatTimer.start();}
-			
-			DisplayErrorsTimer.start();
-			
-			Utils.startViewer();
+        Config.init(Main.class);
+        Log.init(Config.appPath, Globals.APPLICATION_NAME);
+        Log.info("***** " + Globals.APPLICATION_NAME + " version " + Globals.APPLICATION_VERSION + " *****");
+        Config.loadApplicationProperties();
+        Config.loadDisplayProperties();
+        DisplayErrors.getInstance().loadErrorsFromFile();
 
-			WebServer.main(args);
+        try {
+            if (Utils.isRestartFlagSet()) {
+                ExternalLogger.logExternal(InsertSchema.withEvent("startup", "from restart"));
+                Utils.unsetFlag_RestartingPlayer();
+            } else {
+                ExternalLogger.logExternal(InsertSchema.withEvent("startup"));
+            }
 
-			//kill all "chrome.exe" processes when player shuts down?
-			Utils.stopViewer();
-			
-			DisplayErrors.getInstance().writeErrorsToFile();
+            //use socket to test if another instance is running
+            java.net.ServerSocket ss = WebServer.createServerSocket();// new java.net.ServerSocket(Config.basePort);
 
-		} catch (BindException e) {
-			Log.error("Cannot start application. Cannot open port " + Config.basePort + ". You can only run one instance of " + Globals.APPLICATION_NAME + ".");
-			ExternalLogger.logExternal(InsertSchema.withEvent("startup failed bind"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-		  e.printStackTrace();
-		  Log.error(e.getMessage());
-		  ExternalLogger.logExternal(InsertSchema.withEvent("application crash", e.getMessage()));
-		}
+            ss.close();
 
-	}
+            if (!Config.viewerHeartBeatOverride.equals("true")) {
+                HeartbeatTimer.start();
+            }
+
+            DisplayErrorsTimer.start();
+
+            Utils.startViewer();
+
+            WebServer.main(args);
+
+            //kill all "chrome.exe" processes when player shuts down?
+            Utils.stopViewer();
+
+            DisplayErrors.getInstance().writeErrorsToFile();
+
+        } catch (BindException e) {
+            Log.error("Cannot start application. Cannot open port " + Config.basePort + ". You can only run one instance of " + Globals.APPLICATION_NAME + ".");
+            ExternalLogger.logExternal(InsertSchema.withEvent("startup failed bind"));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Log.error(e.getMessage());
+            ExternalLogger.logExternal(InsertSchema.withEvent("application crash", e.getMessage()));
+        }
+
+    }
 
 }

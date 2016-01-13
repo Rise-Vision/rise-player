@@ -15,59 +15,59 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class Log {
-	private static Logger log = null;
-	private static FileHandler fh;
-	
-	private static SimpleDateFormat sdf = new SimpleDateFormat("MMM d hh:mm:ss.SSS");
-	private static int fileSizeLimit = 1000000; //1MB
-	private static int numberOfFilesToRotate = 1;
-	
-	public static void init(String path, String loggerName) {
-		
-		if (log != null) return;
+    private static Logger log = null;
+    private static FileHandler fh;
 
-		try {
-			
-			log = Logger.getLogger(loggerName);
-			fh = new FileHandler(path + File.separator + loggerName + ".log", fileSizeLimit, numberOfFilesToRotate, true);
+    private static SimpleDateFormat sdf = new SimpleDateFormat("MMM d hh:mm:ss.SSS");
+    private static int fileSizeLimit = 1000000; //1MB
+    private static int numberOfFilesToRotate = 1;
 
-			java.util.logging.Formatter myFormatter = new Formatter() {
-				@Override
-				public String format(LogRecord record) {
-					return sdf.format(new Date()) + " " + record.getLevel() + ": " + record.getMessage() + "\r\n";
-				};
-			};
+    public static void init(String path, String loggerName) {
 
-			fh.setFormatter(myFormatter);
-			//fh.setFormatter(new SimpleFormatter());
-			
-			log.addHandler(fh);
-			log.setLevel(Level.INFO);
-			
-			
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        if (log != null) return;
 
-	}
+        try {
 
-	public static void info(String msg) {
-		if (log != null)
-			log.info(msg);
-	}
+            log = Logger.getLogger(loggerName);
+            fh = new FileHandler(path + File.separator + loggerName + ".log", fileSizeLimit, numberOfFilesToRotate, true);
 
-	public static void warn(String msg) {
-		if (log != null)
-			log.warning(msg);
-	}
+            java.util.logging.Formatter myFormatter = new Formatter() {
+                @Override
+                public String format(LogRecord record) {
+                    return sdf.format(new Date()) + " " + record.getLevel() + ": " + record.getMessage() + "\r\n";
+                }
+            };
 
-	public static void error(String msg) {
-		if (log != null)
-			log.severe(msg);
-	}
-	
+            fh.setFormatter(myFormatter);
+            //fh.setFormatter(new SimpleFormatter());
+
+            log.addHandler(fh);
+            log.setLevel(Level.INFO);
+
+
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void info(String msg) {
+        if (log != null)
+            log.info(msg);
+    }
+
+    public static void warn(String msg) {
+        if (log != null)
+            log.warning(msg);
+    }
+
+    public static void error(String msg) {
+        if (log != null)
+            log.severe(msg);
+    }
+
 }

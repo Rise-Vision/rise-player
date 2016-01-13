@@ -16,45 +16,45 @@ import com.risevision.riseplayer.utils.Utils;
 
 public class HeartbeatTimer {
 
-	private static Date lastHearbeat = new Date();
-	static class OnTimerTask extends TimerTask {
+    private static Date lastHearbeat = new Date();
 
-		@Override
-		public void run() {
-			Date now = new Date();
-			if ((lastHearbeat.getTime() + Globals.MAX_HEARTBEAT_GAP_MS) < now.getTime()) {
-				if ((lastHearbeat.getTime() + (Globals.MAX_HEARTBEAT_GAP_MS * 3)) < now.getTime()) {
-					Log.error("Rise Viewer is not responding, clearing the browser cache and starting the viewer.");
-					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat clean restart"));
-					
-					//DisplayErrors.getInstance().viewerNotResponding(1);
-					Utils.cleanChromeCache();
-					Utils.cleanChromeData();
-					Utils.restartViewer();
-				}
-				else {
-					ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat restart"));
-				  
-					Utils.restartViewer();
-				}
-			} else {
-				//DisplayErrors.getInstance().viewerNotResponding(-1);
-			}
-		}
+    static class OnTimerTask extends TimerTask {
 
-	}
+        @Override
+        public void run() {
+            Date now = new Date();
+            if ((lastHearbeat.getTime() + Globals.MAX_HEARTBEAT_GAP_MS) < now.getTime()) {
+                if ((lastHearbeat.getTime() + (Globals.MAX_HEARTBEAT_GAP_MS * 3)) < now.getTime()) {
+                    Log.error("Rise Viewer is not responding, clearing the browser cache and starting the viewer.");
+                    ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat clean restart"));
 
-	private static Timer timer;
+                    //DisplayErrors.getInstance().viewerNotResponding(1);
+                    Utils.cleanChromeCache();
+                    Utils.cleanChromeData();
+                    Utils.restartViewer();
+                } else {
+                    ExternalLogger.logExternal(InsertSchema.withEvent("heartbeat restart"));
 
-	public static void start() {
-		timer = new Timer();
-		
-		timer.schedule(new OnTimerTask(), Globals.HEARTBEAT_TIMER_INTERVAL_MS, Globals.HEARTBEAT_TIMER_INTERVAL_MS);
-	}
+                    Utils.restartViewer();
+                }
+            } else {
+                //DisplayErrors.getInstance().viewerNotResponding(-1);
+            }
+        }
 
-	public static void recordHeartbeat() {
-		lastHearbeat = new Date();		
-	}
+    }
+
+    private static Timer timer;
+
+    public static void start() {
+        timer = new Timer();
+
+        timer.schedule(new OnTimerTask(), Globals.HEARTBEAT_TIMER_INTERVAL_MS, Globals.HEARTBEAT_TIMER_INTERVAL_MS);
+    }
+
+    public static void recordHeartbeat() {
+        lastHearbeat = new Date();
+    }
 
 }
 
