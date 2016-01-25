@@ -29,7 +29,7 @@ public class Main {
         try {
             if (Utils.isRestartFlagSet()) {
                 ExternalLogger.logExternal(InsertSchema.withEvent("startup", "from restart"));
-                Utils.unsetFlag_RestartingPlayer();
+                Utils.unsetFlag_Restarting();
             } else {
                 ExternalLogger.logExternal(InsertSchema.withEvent("startup"));
             }
