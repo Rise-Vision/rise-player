@@ -327,6 +327,7 @@ public class Config {
             builder.append(" --allow-outdated-plugins");   //this is for Java applets
             builder.append(" --disable-session-crashed-bubble");
             builder.append(" --disable-infobars");
+            builder.append(" --overscroll-history-navigation=0");
             builder.append(" --user-data-dir=" + Config.getChromeDataPath());
         } else {
             builder.append(" --kiosk");
@@ -345,6 +346,7 @@ public class Config {
             builder.append(" --disable-infobars");
             builder.append(" --disable-setuid-sandbox");
             builder.append(" --test-type=browser");
+            builder.append(" --overscroll-history-navigation=0");
             builder.append(" --user-data-dir='" + Config.getChromeDataPath() + "'");
             builder.append(" --disk-cache-dir='" + Config.getChromeCachePath() + "'");
         }
