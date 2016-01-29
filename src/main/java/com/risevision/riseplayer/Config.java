@@ -35,7 +35,6 @@ public class Config {
     private static final String PROPERTY_CORE_URL = "coreurl";
     private static final String PROPERTY_RESTART_OVERRIDE = "restartoverride";
     private static final String PROPERTY_VIEWER_HEARTBEAT_OVERRIDE = "heartbeatoverride";
-    private static final String PROPERTY_BROWSER_ARGUMENTS = "browserarguments";
 
     public static final String CHROME_PREFERENCES = "{\"countryid_at_install\":0,\"default_search_provider\":{\"enabled\":false},\"geolocation\":{\"default_content_setting\":1},\"profile\":{\"content_settings\":{\"pref_version\":1},\"default_content_settings\":{\"geolocation\": 1},\"exited_cleanly\":true}}";
 
@@ -65,7 +64,7 @@ public class Config {
     public static String claimId = "";
     public static String chromePath;
     public static String chromeAppId = null;
-    public static String browserArguments = "";
+    public static String browserArguments = getDefaultBrowserArguments();
 
     private static Properties appProps = new Properties();
     private static Properties displayProps = new Properties();
@@ -245,16 +244,6 @@ public class Config {
                 coreBaseUrl = getPropertyStr(PROPERTY_CORE_URL, Globals.CORE_BASE_URL, displayProps);
                 restartOverride = getPropertyStr(PROPERTY_RESTART_OVERRIDE, "false", displayProps);
                 viewerHeartBeatOverride = getPropertyStr(PROPERTY_VIEWER_HEARTBEAT_OVERRIDE, "false", displayProps);
-                browserArguments = getPropertyStr(PROPERTY_BROWSER_ARGUMENTS, "", displayProps);
-
-                if (!displayProps.containsKey(PROPERTY_BROWSER_ARGUMENTS)) {
-                    browserArguments = getDefaultBrowserArguments();
-                    saveDisplayProperties();
-                }
-            } else {
-                Log.info("Display properties file is not found. Using default setting. File name: " + f.getName());
-                browserArguments = getDefaultBrowserArguments();
-                saveDisplayProperties();
             }
 
         } catch (Exception e) {
@@ -303,12 +292,6 @@ public class Config {
         builder.append("viewerurl=" + viewerBaseUrl + "\r\n");
         builder.append("coreurl=" + coreBaseUrl + "\r\n");
 
-        for (String browserArgument : (" " + Config.browserArguments).split(" --")) {
-            if (!browserArgument.trim().equals("")) {
-                builder.append("browserarguments=--" + browserArgument + "\r\n");
-            }
-        }
-
         Utils.saveToFile(fileName, builder.toString());
     }
 
@@ -353,22 +336,6 @@ public class Config {
 
         return builder.toString();
     }
-
-//	public static void saveDisplayProperties() {
-//
-//		String fileName = FILE_DISPLAY_PROPERTIES;
-//		try {
-//			//displayProps.store(new FileOutputStream(new File(appPath, fileName)), null);
-//			displayProps.setProperty(PROPERTY_DISPLAY_ID, displayId);
-//			displayProps.setProperty(PROPERTY_CLAIM_ID, claimId);
-//			FileOutputStream out = new FileOutputStream(new File(appPath, fileName));
-//			//FileOutputStream out = new FileOutputStream(appPath + File.separator + fileName);
-//			displayProps.store(out, null);
-//			out.close();
-//		} catch (Exception e) {
-//			Log.warn("Error saving display properties. File name: " + fileName + ". Error: " + e.getMessage());
-//		}
-//	}
 
     public static String getViewerPropertiesPath() {
         return appPath + File.separator + "viewer.ini.txt"; //keep the "txt" extension for web intent filter to pass the file
