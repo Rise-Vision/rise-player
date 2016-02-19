@@ -27,12 +27,27 @@ public class Main {
         DisplayErrors.getInstance().loadErrorsFromFile();
 
         try {
+            String startupDetails = "";
             if (Utils.isRestartFlagSet()) {
-                ExternalLogger.logExternal(InsertSchema.withEvent("startup", "from restart"));
+                startupDetails = startupDetails.concat("from restart ");
                 Utils.unsetFlag_Restarting();
-            } else {
-                ExternalLogger.logExternal(InsertSchema.withEvent("startup"));
             }
+
+            if (Utils.isUngracefulShutdownFlagSet()) {
+                startupDetails = startupDetails.concat("after ungraceful shutdown ");
+            }
+
+            ExternalLogger.logExternal(InsertSchema.withEvent("startup", startupDetails.trim()));
+
+            // if this is not unset at the end, we conclude it was not a graceful shutdown
+            Utils.setFlag_UngracefulShutdown();
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    Utils.unsetFlag_UngracefulShutdown();
+                }
+            });
 
             //use socket to test if another instance is running
             java.net.ServerSocket ss = WebServer.createServerSocket();// new java.net.ServerSocket(Config.basePort);
@@ -58,7 +73,6 @@ public class Main {
             Log.error("Cannot start application. Cannot open port " + Config.basePort + ". You can only run one instance of " + Globals.APPLICATION_NAME + ".");
             ExternalLogger.logExternal(InsertSchema.withEvent("startup failed bind"));
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             Log.error(e.getMessage());
             ExternalLogger.logExternal(InsertSchema.withEvent("application crash", e.getMessage()));

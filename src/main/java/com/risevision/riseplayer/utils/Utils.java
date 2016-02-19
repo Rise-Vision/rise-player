@@ -390,6 +390,20 @@ public class Utils {
         return f.exists() && !f.isDirectory();
     }
 
+    public static void setFlag_UngracefulShutdown() {
+        saveToFile(Config.getUngracefulShutdownFlagPath(), "");
+    }
+
+    public static void unsetFlag_UngracefulShutdown() {
+        File f = new File(Config.getUngracefulShutdownFlagPath(), "");
+        f.delete();
+    }
+
+    public static boolean isUngracefulShutdownFlagSet() {
+        File f = new File(Config.getUngracefulShutdownFlagPath());
+        return f.exists() && !f.isDirectory();
+    }
+
     public static void saveToFile(String fileName, String txt) {
         PrintWriter out;
         try {
