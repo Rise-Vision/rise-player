@@ -195,6 +195,8 @@ public class Config {
 
     public static String getRestartFlagPath() { return appPath + File.separator + "restarting_flag"; }
 
+    public static String getUngracefulShutdownFlagPath() { return appPath + File.separator + "player_not_shut_down_flag"; }
+
     public static String getExtendedModeFile() {
         if (isWindows)
             return appPath + File.separator + extendedModeExe;
