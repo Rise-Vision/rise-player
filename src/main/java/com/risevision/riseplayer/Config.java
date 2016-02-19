@@ -195,6 +195,8 @@ public class Config {
 
     public static String getRestartFlagPath() { return appPath + File.separator + "restarting_flag"; }
 
+    public static String getGracefulShutdownFlagPath() { return appPath + File.separator + "graceful_shutdown_flag"; }
+
     public static String getExtendedModeFile() {
         if (isWindows)
             return appPath + File.separator + extendedModeExe;
