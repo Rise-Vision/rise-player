@@ -315,10 +315,29 @@ public class Utils {
         //Important: need to run script in background so when script closes Player it does not kill itself running as child process
         // "/S" = silent
         // "/C" = clear browser cache
-        String[] cmd = new String[]{"bash", "-c", Config.appPath + File.separator + "rvplayer /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
-        if (Config.isWindows)
-            cmd = new String[]{Config.appPath + File.separator + "RiseVisionPlayer.exe", "/S", "/C"};
-
+        String[] cmd;
+        String windowsV2Launcher = Config.appPath + File.separator + "RiseVisionPlayer.exe";
+        String windowsV3Launcher = Config.appPath + File.separator + "Installer" + File.separator + "installer.exe";
+        String linuxV2Launcher = Config.appPath + File.separator + "rvplayer";
+        String linuxV3Launcher = Config.appPath + File.separator + "Installer" + File.separator + "installer";
+        
+        if (Config.isWindows) {
+            if(new File(windowsV3Launcher).exists()) {
+                cmd = new String[]{ windowsV3Launcher, "--unattended" };
+            }
+            else {
+                cmd = new String[]{ windowsV2Launcher, "/S", "/C" };                
+            }
+        }
+        else {
+            if(new File(linuxV3Launcher).exists()) {
+                cmd = new String[]{"bash", "-c", linuxV3Launcher + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+            }
+            else {
+                cmd = new String[]{"bash", "-c", linuxV2Launcher + " /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+            }
+        }
+        
         executeCommand(cmd, false);
     }
 
