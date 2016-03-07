@@ -409,6 +409,20 @@ public class Utils {
         return f.exists() && !f.isDirectory();
     }
 
+    public static void setFlag_GracefulShutdown() {
+        saveToFile(Config.getGracefulShutdownFlagPath(), "");
+    }
+
+    public static void unsetFlag_GracefulShutdown() {
+        File f = new File(Config.getGracefulShutdownFlagPath(), "");
+        f.delete();
+    }
+
+    public static boolean isGracefulShutdownFlagSet() {
+        File f = new File(Config.getGracefulShutdownFlagPath());
+        return f.exists() && !f.isDirectory();
+    }
+
     public static void saveToFile(String fileName, String txt) {
         PrintWriter out;
         try {
@@ -416,7 +430,6 @@ public class Utils {
             out.print(txt);
             out.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             Log.error("error writtign to file : " + fileName);
             Log.error(e.getMessage());
@@ -481,23 +494,5 @@ public class Utils {
             file.delete();
         }
     }
-
-//	private static String readFile(String fileName) {
-//		String lineSeparator = System.getProperty("line.separator");
-//		String res = "";
-//		File file = new File(fileName);
-//		if (file.exists()) {
-//			try {
-//				List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-//				if (lines != null && lines.size() > 0) {
-//					for (String line : lines) {
-//						res += (res.length() > 0 ? lineSeparator : "") + line;
-//					}
-//				}
-//			} catch (IOException e) {
-//			}
-//		}
-//		return res;
-//	}
-
 }
+
