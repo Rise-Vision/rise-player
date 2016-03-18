@@ -59,7 +59,7 @@ public class Main {
 
             DisplayErrorsTimer.start();
 
-            Utils.startViewer();
+            Utils.restartViewer();
 
             WebServer.main(args);
 
