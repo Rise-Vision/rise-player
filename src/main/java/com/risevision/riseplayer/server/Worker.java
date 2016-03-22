@@ -24,7 +24,6 @@ import com.risevision.riseplayer.externallogger.ExternalLogger;
 import com.risevision.riseplayer.externallogger.InsertSchema;
 import com.risevision.riseplayer.timers.HeartbeatTimer;
 import com.risevision.riseplayer.utils.SystemInfo;
-import com.risevision.riseplayer.utils.UpdateUtils;
 import com.risevision.riseplayer.utils.Utils;
 
 class Worker extends WebServer implements HttpConstants, Runnable {
@@ -234,7 +233,7 @@ class Worker extends WebServer implements HttpConstants, Runnable {
                     Utils.restart();
                 } else if ("true".equalsIgnoreCase(queryMap.get("update_required"))) {
                     log("update_required received");
-                    new UpdateUtils().restartIfUpdateAvailable();
+                    // Upgrade required messages are now ignored
                 }
 
                 HttpUtils.printHeadersCommon(HTTP_OK_TEXT, ps);
