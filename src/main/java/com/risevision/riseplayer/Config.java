@@ -39,6 +39,7 @@ public class Config {
     public static final String CHROME_PREFERENCES = "{\"countryid_at_install\":0,\"default_search_provider\":{\"enabled\":false},\"geolocation\":{\"default_content_setting\":1},\"profile\":{\"content_settings\":{\"pref_version\":1},\"default_content_settings\":{\"geolocation\": 1},\"exited_cleanly\":true}}";
 
     public static String appPath;
+    public static String currVersionPath;
 
     public static int basePort = Globals.BASE_PORT;
 
@@ -101,20 +102,23 @@ public class Config {
         }
 
         Log.info("userHome =" + userHome);
-
-        appPath = mainClass.getProtectionDomain().getCodeSource().getLocation().getPath();
-        if (System.getProperty("os.name").startsWith("Windows")) {
+        
+        
+        appPath = System.getenv(isWindows ? "LOCALAPPDATA" : "HOME") + File.separator + "rvplayer";
+        currVersionPath = mainClass.getProtectionDomain().getCodeSource().getLocation().getPath();
+        
+        if (isWindows) {
             try {
-                appPath = URLDecoder.decode(appPath, "UTF-8");
+                currVersionPath = URLDecoder.decode(currVersionPath, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            appPath = appPath.substring(1).replace("/", File.separator);
+            currVersionPath = currVersionPath.substring(1).replace("/", File.separator);
         }
 
-        if (appPath.endsWith(".jar") || appPath.endsWith(File.separator)) {
-            appPath = appPath.substring(0, appPath.lastIndexOf(File.separator));
+        if (currVersionPath.endsWith(".jar") || currVersionPath.endsWith(File.separator)) {
+            currVersionPath = currVersionPath.substring(0, currVersionPath.lastIndexOf(File.separator));
         }
 
         calculateScreenResolution();
@@ -155,16 +159,16 @@ public class Config {
 
     private static String getDefaultChromePath() {
         if (isWindows)
-            return appPath + File.separator + "chromium" + File.separator + "chrome.exe";
+            return currVersionPath + File.separator + "chromium" + File.separator + "chrome.exe";
         else
-            return appPath + File.separator + "chrome-linux" + File.separator + "chrome";
+            return currVersionPath + File.separator + "chrome-linux" + File.separator + "chrome";
     }
 
     public static String getFlashPluginPath() {
         if (isWindows)
-            return appPath + File.separator + "chromium" + File.separator + "PepperFlash" + File.separator + "pepflashplayer.dll";
+            return currVersionPath + File.separator + "chromium" + File.separator + "PepperFlash" + File.separator + "pepflashplayer.dll";
         else
-            return appPath + File.separator + "chrome-linux" + File.separator + "libflashplayer.so";
+            return currVersionPath + File.separator + "chrome-linux" + File.separator + "libflashplayer.so";
     }
 
     public static String getChromeDataPath() {

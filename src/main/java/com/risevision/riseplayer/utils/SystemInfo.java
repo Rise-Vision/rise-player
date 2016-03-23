@@ -73,7 +73,7 @@ public class SystemInfo {
 
     private static String readVersion(String fileName) {
         String res = "";
-        File file = new File(Config.appPath, fileName);
+        File file = new File(Config.currVersionPath, fileName);
         if (file.exists()) {
             try {
                 List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
