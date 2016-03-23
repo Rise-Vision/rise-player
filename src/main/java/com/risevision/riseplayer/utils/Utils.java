@@ -323,7 +323,7 @@ public class Utils {
         
         if (Config.isWindows) {
             if(new File(windowsV3Launcher).exists()) {
-                cmd = new String[]{ windowsV3Launcher, "--unattended" };
+                cmd = new String[]{ "cmd", "/c", "start", windowsV3Launcher, "--unattended" };
             }
             else {
                 cmd = new String[]{ windowsV2Launcher, "/S", "/C" };                
