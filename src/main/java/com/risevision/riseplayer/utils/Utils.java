@@ -317,13 +317,13 @@ public class Utils {
         // "/C" = clear browser cache
         String[] cmd;
         String windowsV2Launcher = Config.appPath + File.separator + "RiseVisionPlayer.exe";
-        String windowsV3Launcher = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts" + File.separator + "start.bat";
+        String windowsV3Launcher = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts" + File.separator + "background.jse";
         String linuxV2Launcher = Config.appPath + File.separator + "rvplayer";
         String linuxV3Launcher = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts" + File.separator + "start.sh";
         
         if (Config.isWindows) {
             if(new File(windowsV3Launcher).exists()) {
-                cmd = new String[]{ "cmd", "/c", "start", "\"\"", windowsV3Launcher, "--unattended"};
+                cmd = new String[]{ windowsV3Launcher, "start.bat", "--unattended"};
             }
             else {
                 cmd = new String[]{ windowsV2Launcher, "/S", "/C" };                
