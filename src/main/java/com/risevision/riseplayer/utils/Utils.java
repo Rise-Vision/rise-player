@@ -310,31 +310,31 @@ public class Utils {
 
         return false;
     }
+    
+    public static boolean isV3Installer() {
+    	return new File(Config.v3Launcher).exists();
+    }
 
     public static void runAutoUpdateScript() {
         //Important: need to run script in background so when script closes Player it does not kill itself running as child process
         // "/S" = silent
         // "/C" = clear browser cache
         String[] cmd;
-        String windowsV2Launcher = Config.appPath + File.separator + "RiseVisionPlayer.exe";
-        String windowsV3Launcher = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts" + File.separator + "background.jse";
-        String linuxV2Launcher = Config.appPath + File.separator + "rvplayer";
-        String linuxV3Launcher = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts" + File.separator + "start.sh";
         
         if (Config.isWindows) {
-            if(new File(windowsV3Launcher).exists()) {
-                cmd = new String[]{ "cmd", "/c", "start", "\"\"", windowsV3Launcher, "start.bat", "--unattended"};
+            if(isV3Installer()) {
+                cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "start.bat", "--unattended"};
             }
             else {
-                cmd = new String[]{ windowsV2Launcher, "/S", "/C" };                
+                cmd = new String[]{ Config.v2Launcher, "/S", "/C" };
             }
         }
         else {
-            if(new File(linuxV3Launcher).exists()) {
-                cmd = new String[]{"bash", "-c", linuxV3Launcher + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+            if(isV3Installer()) {
+                cmd = new String[]{"bash", "-c", Config.v3Launcher + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
             else {
-                cmd = new String[]{"bash", "-c", linuxV2Launcher + " /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+                cmd = new String[]{"bash", "-c", Config.v2Launcher + " /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
         }
         
