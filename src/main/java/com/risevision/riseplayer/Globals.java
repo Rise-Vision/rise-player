@@ -7,7 +7,7 @@ package com.risevision.riseplayer;
 public class Globals {
 
     public static final String APPLICATION_NAME = "RisePlayer";
-    public static final String APPLICATION_VERSION = "2016.03.24.19.30";
+    public static final String APPLICATION_VERSION = "2016.04.15.14.00";
 
     public static final int BASE_PORT = 9449;
     public static final int MAX_WORKERS = 10;
