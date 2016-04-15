@@ -269,8 +269,6 @@ public class Utils {
     }
 
     public static void stopViewer() {
-    	if(isV3Installer()) { return; }
-    	
         if (Config.isWindows) {
             killChrome_Windows();
         } else {
@@ -279,14 +277,26 @@ public class Utils {
     }
 
     public static void killChrome_Linux() {
-    	if(isV3Installer()) { return; }
+    	if(isV3Installer()) {
+    		String[] cmd = new String[]{"bash", "-c", Config.v3ScriptsPath + File.separator + "stop.sh" + " > " + Config.appPath + File.separator + "stop-installer.log  2>&1 &"};
+    		
+    		executeCommand(cmd, false);
+    		
+    		return;
+    	}
     	
         String[] cmd = new String[]{"killall", "chrome"};
         executeCommand(cmd, true);
     }
 
     public static void killChrome_Windows() {
-    	if(isV3Installer()) { return; }
+    	if(isV3Installer()) {
+    		String[] cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "stop.bat" };
+    		
+            executeCommand(cmd, false);
+            
+    		return;
+    	}
     	
         // Problem:
         // "killall /im chrome.exe" kills only 1 instance of chrome at a time
@@ -347,7 +357,7 @@ public class Utils {
             	List<String> argsList = Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "start.bat", "--unattended" });
             	
             	if(quickRestart) {
-            		argsList.add("--skip-timeout");
+            		argsList.add("--skip-countdown");
             		argsList.add("--rollout-pct=0");
             	}
             	
@@ -359,7 +369,7 @@ public class Utils {
         }
         else {
             if(isV3Installer()) {
-                String launcherParams = quickRestart ? " --skip-timeout --rollout-pct=0" : "";
+                String launcherParams = quickRestart ? " --skip-countdown --rollout-pct=0" : "";
                 
                 cmd = new String[]{"bash", "-c", Config.v3Launcher + launcherParams + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
