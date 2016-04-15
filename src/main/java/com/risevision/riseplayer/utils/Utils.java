@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import com.risevision.riseplayer.Config;
@@ -61,6 +62,10 @@ public class Utils {
     }
 
     public static void restartViewer() {
+    	if(isV3Installer()) {
+    		runAutoUpdateScript(true);
+    		return;
+    	}
 
         stopViewer();
 
@@ -326,8 +331,12 @@ public class Utils {
     public static boolean isV3Installer() {
     	return new File(Config.v3Launcher).exists();
     }
-
+    
     public static void runAutoUpdateScript() {
+    	runAutoUpdateScript(false);
+    }
+
+    public static void runAutoUpdateScript(boolean quickRestart) {
         //Important: need to run script in background so when script closes Player it does not kill itself running as child process
         // "/S" = silent
         // "/C" = clear browser cache
@@ -335,7 +344,14 @@ public class Utils {
         
         if (Config.isWindows) {
             if(isV3Installer()) {
-                cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "start.bat", "--unattended"};
+            	List<String> argsList = Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "start.bat", "--unattended" });
+            	
+            	if(quickRestart) {
+            		argsList.add("--skip-timeout");
+            		argsList.add("--rollout-pct=0");
+            	}
+            	
+                cmd = argsList.toArray(new String[argsList.size()]);
             }
             else {
                 cmd = new String[]{ Config.v2Launcher, "/S", "/C" };
@@ -343,7 +359,9 @@ public class Utils {
         }
         else {
             if(isV3Installer()) {
-                cmd = new String[]{"bash", "-c", Config.v3Launcher + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+                String launcherParams = quickRestart ? " --skip-timeout --rollout-pct=0" : "";
+                
+                cmd = new String[]{"bash", "-c", Config.v3Launcher + launcherParams + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
             else {
                 cmd = new String[]{"bash", "-c", Config.v2Launcher + " /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
