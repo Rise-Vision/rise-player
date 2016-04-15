@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 import com.risevision.riseplayer.Config;
@@ -61,6 +62,10 @@ public class Utils {
     }
 
     public static void restartViewer() {
+    	if(isV3Installer()) {
+    		runAutoUpdateScript(true);
+    		return;
+    	}
 
         stopViewer();
 
@@ -114,6 +119,7 @@ public class Utils {
     }
 
     public static void startViewer_OpenPage() {
+    	if(isV3Installer()) { return; }
 
         //Windows: chrome.exe --kiosk --no-default-browser-check --noerrdialogs --no-message-box --disable-desktop-notifications --allow-running-insecure-content --user-data-dir="$INSTDIR\data" ${ViewerURL}$DisplayId'
         //Linux:       chrome --kiosk --no-default-browser-check --noerrdialogs --no-message-box --disable-desktop-notifications --allow-running-insecure-content --disk-cache-dir=$HOME/$CACHE_PATH --user-data-dir=$HOME/$CONFIG_PATH "$VIEWER_URL"
@@ -138,6 +144,7 @@ public class Utils {
     }
 
     private static void startViewer_ChromeApp_Windows(int[] viewerDimensions) {
+    	if(isV3Installer()) { return; }
 
         Vector<String> cmd = new Vector<>();
 
@@ -165,6 +172,7 @@ public class Utils {
     }
 
     private static void run_extendedModeExe_Windows(int[] viewerDimensions) {
+    	if(isV3Installer()) { return; }
 
         Vector<String> cmd = new Vector<>();
 
@@ -189,6 +197,8 @@ public class Utils {
     }
 
     private static void startViewer_OpenPage_Windows() {
+    	if(isV3Installer()) { return; }
+
         Vector<String> cmd = new Vector<>();
 
         cmd.add(Config.chromePath);
@@ -211,6 +221,7 @@ public class Utils {
     }
 
     private static void startViewer_OpenPage_Linux() {
+    	if(isV3Installer()) { return; }
 
         StringBuilder cmd = new StringBuilder();
 
@@ -235,6 +246,7 @@ public class Utils {
     }
 
     public static void startViewer_StartPackagedApp() {
+    	if(isV3Installer()) { return; }
 
         Config.saveViewerStartupUrlToFile();
 
@@ -265,12 +277,27 @@ public class Utils {
     }
 
     public static void killChrome_Linux() {
-
+    	if(isV3Installer()) {
+    		String[] cmd = new String[]{"bash", "-c", Config.v3ScriptsPath + File.separator + "killtasks.sh" + " > " + Config.appPath + File.separator + "stop-installer.log  2>&1 &"};
+    		
+    		executeCommand(cmd, false);
+    		
+    		return;
+    	}
+    	
         String[] cmd = new String[]{"killall", "chrome"};
         executeCommand(cmd, true);
     }
 
     public static void killChrome_Windows() {
+    	if(isV3Installer()) {
+    		String[] cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "killtasks.bat" };
+    		
+            executeCommand(cmd, false);
+            
+    		return;
+    	}
+    	
         // Problem:
         // "killall /im chrome.exe" kills only 1 instance of chrome at a time
         // "killall /f /im chrome.exe" forcefully kills all instances, but then Chrome shows "Chrome didn't shutdown correctly" message
@@ -310,31 +337,44 @@ public class Utils {
 
         return false;
     }
-
+    
+    public static boolean isV3Installer() {
+    	return new File(Config.v3Launcher).exists();
+    }
+    
     public static void runAutoUpdateScript() {
+    	runAutoUpdateScript(false);
+    }
+
+    public static void runAutoUpdateScript(boolean quickRestart) {
         //Important: need to run script in background so when script closes Player it does not kill itself running as child process
         // "/S" = silent
         // "/C" = clear browser cache
         String[] cmd;
-        String windowsV2Launcher = Config.appPath + File.separator + "RiseVisionPlayer.exe";
-        String windowsV3Launcher = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts" + File.separator + "background.jse";
-        String linuxV2Launcher = Config.appPath + File.separator + "rvplayer";
-        String linuxV3Launcher = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts" + File.separator + "start.sh";
         
         if (Config.isWindows) {
-            if(new File(windowsV3Launcher).exists()) {
-                cmd = new String[]{ "cmd", "/c", "start", "\"\"", windowsV3Launcher, "start.bat", "--unattended"};
+            if(isV3Installer()) {
+            	List<String> argsList = new ArrayList<>(Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "restart.bat", "--unattended" }));
+            	
+            	if(quickRestart) {
+            		argsList.add("--skip-countdown");
+            		argsList.add("--rollout-pct=0");
+            	}
+            	
+                cmd = argsList.toArray(new String[argsList.size()]);
             }
             else {
-                cmd = new String[]{ windowsV2Launcher, "/S", "/C" };                
+                cmd = new String[]{ Config.v2Launcher, "/S", "/C" };
             }
         }
         else {
-            if(new File(linuxV3Launcher).exists()) {
-                cmd = new String[]{"bash", "-c", linuxV3Launcher + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+            if(isV3Installer()) {
+                String launcherParams = quickRestart ? " --skip-countdown --rollout-pct=0" : "";
+                
+                cmd = new String[]{"bash", "-c", Config.v3Launcher + launcherParams + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
             else {
-                cmd = new String[]{"bash", "-c", linuxV2Launcher + " /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+                cmd = new String[]{"bash", "-c", Config.v2Launcher + " /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
         }
         

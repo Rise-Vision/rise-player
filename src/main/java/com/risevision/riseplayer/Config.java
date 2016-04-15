@@ -74,6 +74,10 @@ public class Config {
     public static int screenHeight = 0;
     public static int screenWidth = 0;
     private static Date restartTime;
+    
+    public static String v2Launcher;
+    public static String v3Launcher;
+    public static String v3ScriptsPath;
 
     private static final String PLAYER_NAME_DEFAULT = "RisePlayer";
     private static String playerName = PLAYER_NAME_DEFAULT;
@@ -122,7 +126,17 @@ public class Config {
         }
 
         calculateScreenResolution();
-
+        
+        v3ScriptsPath = Config.currVersionPath + File.separator + "Installer" + File.separator + "scripts";
+        
+        if(isWindows) {
+            v2Launcher = Config.appPath + File.separator + "RiseVisionPlayer.exe";
+            v3Launcher = v3ScriptsPath + File.separator + "background.jse";
+        }
+        else {
+            v2Launcher = Config.appPath + File.separator + "rvplayer";
+            v3Launcher = v3ScriptsPath + File.separator + "restart.sh";
+        }
     }
 
     static void loadApplicationProperties() {
