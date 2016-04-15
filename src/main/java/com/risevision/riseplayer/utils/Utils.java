@@ -257,6 +257,8 @@ public class Utils {
     }
 
     public static void stopViewer() {
+    	if(isV3Installer()) { return; }
+    	
         if (Config.isWindows) {
             killChrome_Windows();
         } else {
@@ -265,12 +267,15 @@ public class Utils {
     }
 
     public static void killChrome_Linux() {
-
+    	if(isV3Installer()) { return; }
+    	
         String[] cmd = new String[]{"killall", "chrome"};
         executeCommand(cmd, true);
     }
 
     public static void killChrome_Windows() {
+    	if(isV3Installer()) { return; }
+    	
         // Problem:
         // "killall /im chrome.exe" kills only 1 instance of chrome at a time
         // "killall /f /im chrome.exe" forcefully kills all instances, but then Chrome shows "Chrome didn't shutdown correctly" message
