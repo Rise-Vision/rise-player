@@ -114,6 +114,7 @@ public class Utils {
     }
 
     public static void startViewer_OpenPage() {
+    	if(isV3Installer()) { return; }
 
         //Windows: chrome.exe --kiosk --no-default-browser-check --noerrdialogs --no-message-box --disable-desktop-notifications --allow-running-insecure-content --user-data-dir="$INSTDIR\data" ${ViewerURL}$DisplayId'
         //Linux:       chrome --kiosk --no-default-browser-check --noerrdialogs --no-message-box --disable-desktop-notifications --allow-running-insecure-content --disk-cache-dir=$HOME/$CACHE_PATH --user-data-dir=$HOME/$CONFIG_PATH "$VIEWER_URL"
@@ -138,6 +139,7 @@ public class Utils {
     }
 
     private static void startViewer_ChromeApp_Windows(int[] viewerDimensions) {
+    	if(isV3Installer()) { return; }
 
         Vector<String> cmd = new Vector<>();
 
@@ -165,6 +167,7 @@ public class Utils {
     }
 
     private static void run_extendedModeExe_Windows(int[] viewerDimensions) {
+    	if(isV3Installer()) { return; }
 
         Vector<String> cmd = new Vector<>();
 
@@ -189,6 +192,8 @@ public class Utils {
     }
 
     private static void startViewer_OpenPage_Windows() {
+    	if(isV3Installer()) { return; }
+
         Vector<String> cmd = new Vector<>();
 
         cmd.add(Config.chromePath);
@@ -211,6 +216,7 @@ public class Utils {
     }
 
     private static void startViewer_OpenPage_Linux() {
+    	if(isV3Installer()) { return; }
 
         StringBuilder cmd = new StringBuilder();
 
@@ -235,6 +241,7 @@ public class Utils {
     }
 
     public static void startViewer_StartPackagedApp() {
+    	if(isV3Installer()) { return; }
 
         Config.saveViewerStartupUrlToFile();
 
