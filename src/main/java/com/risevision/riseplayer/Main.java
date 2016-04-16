@@ -58,8 +58,10 @@ public class Main {
             }
 
             DisplayErrorsTimer.start();
-
-            Utils.restartViewer();
+            
+            if(!Utils.isV3Installer()) {
+                Utils.restartViewer();
+            }
 
             WebServer.main(args);
 
