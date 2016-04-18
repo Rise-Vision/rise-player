@@ -354,7 +354,7 @@ public class Utils {
         
         if (Config.isWindows) {
             if(isV3Installer()) {
-            	List<String> argsList = Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "start.bat", "--unattended" });
+            	List<String> argsList = new ArrayList<>(Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "start.bat", "--unattended" }));
             	
             	if(quickRestart) {
             		argsList.add("--skip-countdown");
