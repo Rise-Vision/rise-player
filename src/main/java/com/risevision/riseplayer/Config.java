@@ -135,7 +135,7 @@ public class Config {
         }
         else {
             v2Launcher = Config.appPath + File.separator + "rvplayer";
-            v3Launcher = v3ScriptsPath + File.separator + "start.sh";
+            v3Launcher = v3ScriptsPath + File.separator + "restart.sh";
         }
     }
 
