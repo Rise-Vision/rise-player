@@ -104,60 +104,6 @@ public class WebServer {
             if (ss != null)
                 ss.close();
         }
-
-
-//		Selector selector = Selector.open();
-//		int portCounter = 0;
-//
-//		for (int port = Config.basePort; port < Config.maxPort; port++) {
-//			try {
-//				ServerSocketChannel server = ServerSocketChannel.open();
-//				server.configureBlocking(false);
-//				server.socket().bind(new InetSocketAddress(port));
-//				// we are only interested when accept evens occur on this socket
-//				server.register(selector, SelectionKey.OP_ACCEPT);
-//				ports.add(port);
-//				portCounter++;
-//				if (portCounter == Globals.NUMBER_OF_PORTS_TO_OPEN) {
-//					log("Opened ports: " + ports.toString());
-//					break;
-//				}
-//			} catch (Exception e) {
-//				if (port == Config.basePort) {
-//					Log.error("Cannot open master port " + port + ". Exiting application.");
-//					System.exit(0);
-//				}
-//			}
-//		}
-
-//		ServerPorts.init();
-//
-//		while (selector.isOpen()) {
-//			selector.select(); //blocking
-//			Set<SelectionKey> readyKeys = selector.selectedKeys();
-//			Iterator<SelectionKey> iterator = readyKeys.iterator();
-//			while (iterator.hasNext()) {
-//				SelectionKey selectedKey = (SelectionKey) iterator.next();
-//				if (selectedKey.isAcceptable()) {
-//					SocketChannel client = ((ServerSocketChannel) selectedKey.channel()).accept();
-//					if (client != null) {
-//						Socket socket = client.socket();
-//						Worker w = null;
-//						synchronized (threads) {
-//							if (threads.isEmpty()) {
-//								Worker ws = new Worker();
-//								ws.setSocket(socket);
-//								(new Thread(ws, "additional worker")).start();
-//							} else {
-//								w = (Worker) threads.elementAt(0);
-//								threads.removeElementAt(0);
-//								w.setSocket(socket);
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
     }
 
 

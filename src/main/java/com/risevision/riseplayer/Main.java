@@ -64,11 +64,8 @@ public class Main {
             }
 
             WebServer.main(args);
-            
-            if(!Utils.isV3Installer()) {
-                //kill all "chrome.exe" processes when player shuts down?
-                Utils.stopViewer();
-            }
+
+            Utils.stopViewer();
 
             DisplayErrors.getInstance().writeErrorsToFile();
 
