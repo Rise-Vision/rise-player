@@ -278,7 +278,7 @@ public class Utils {
 
     public static void killChrome_Linux() {
     	if(isV3Installer()) {
-    		String[] cmd = new String[]{"bash", "-c", Config.v3ScriptsPath + File.separator + "stop.sh" + " > " + Config.appPath + File.separator + "stop-installer.log  2>&1 &"};
+    		String[] cmd = new String[]{"bash", "-c", Config.v3ScriptsPath + File.separator + "killtasks.sh" + " > " + Config.appPath + File.separator + "stop-installer.log  2>&1 &"};
     		
     		executeCommand(cmd, false);
     		
@@ -291,7 +291,7 @@ public class Utils {
 
     public static void killChrome_Windows() {
     	if(isV3Installer()) {
-    		String[] cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "stop.bat" };
+    		String[] cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "killtasks.bat" };
     		
             executeCommand(cmd, false);
             

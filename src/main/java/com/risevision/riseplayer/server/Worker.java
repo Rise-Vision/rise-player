@@ -274,8 +274,8 @@ class Worker extends WebServer implements HttpConstants, Runnable {
                 log("shutdown command received");
                 ExternalLogger.logExternal(InsertSchema.withEvent("local shutdown requested"));
                 Utils.setFlag_GracefulShutdown();
-                Utils.stopViewer();
                 DisplayErrors.getInstance().writeErrorsToFile();
+                Utils.stopViewer();
                 System.exit(0);
             } else if (isVersion) {
                 HttpUtils.printHeadersCommon(ps, CONTENT_TYPE_TEXT_PLAIN, Globals.APPLICATION_VERSION.length());
