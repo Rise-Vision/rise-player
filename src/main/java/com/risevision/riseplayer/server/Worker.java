@@ -264,8 +264,6 @@ class Worker extends WebServer implements HttpConstants, Runnable {
                 log("restart command received");
                 ExternalLogger.logExternal(InsertSchema.withEvent("local restart requested"));
                 Utils.restart();
-                Utils.setFlag_GracefulShutdown();
-                System.exit(0);
             } else if (isReboot) {
                 log("reboot command received");
                 ExternalLogger.logExternal(InsertSchema.withEvent("local reboot requested"));
