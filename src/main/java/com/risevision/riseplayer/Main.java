@@ -58,13 +58,17 @@ public class Main {
             }
 
             DisplayErrorsTimer.start();
-
-            Utils.restartViewer();
+            
+            if(!Utils.isV3Installer()) {
+                Utils.restartViewer();
+            }
 
             WebServer.main(args);
-
-            //kill all "chrome.exe" processes when player shuts down?
-            Utils.stopViewer();
+            
+            if(!Utils.isV3Installer()) {
+                //kill all "chrome.exe" processes when player shuts down?
+                Utils.stopViewer();
+            }
 
             DisplayErrors.getInstance().writeErrorsToFile();
 
