@@ -37,10 +37,7 @@ public class Utils {
     }
 
     public static void restart() {
-
-        //just run Auto-Update script.
-        runAutoUpdateScript();
-
+        restartPlatform();
     }
 
     public static void displayStandby(boolean status) {
@@ -57,15 +54,13 @@ public class Utils {
             }
         } catch (Exception e) {
         }
-
-
     }
 
     public static void restartViewer() {
-    	if(isV3Installer()) {
-    		runAutoUpdateScript(true);
-    		return;
-    	}
+        if(isV3Installer()) {
+          restartPlatform();
+          return;
+        }
 
         stopViewer();
 
@@ -277,27 +272,11 @@ public class Utils {
     }
 
     public static void killChrome_Linux() {
-    	if(isV3Installer()) {
-    		String[] cmd = new String[]{"bash", "-c", Config.v3ScriptsPath + File.separator + "killtasks.sh" + " > " + Config.appPath + File.separator + "stop-installer.log  2>&1 &"};
-    		
-    		executeCommand(cmd, false);
-    		
-    		return;
-    	}
-    	
         String[] cmd = new String[]{"killall", "chrome"};
         executeCommand(cmd, true);
     }
 
     public static void killChrome_Windows() {
-    	if(isV3Installer()) {
-    		String[] cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "killtasks.bat" };
-    		
-            executeCommand(cmd, false);
-            
-    		return;
-    	}
-    	
         // Problem:
         // "killall /im chrome.exe" kills only 1 instance of chrome at a time
         // "killall /f /im chrome.exe" forcefully kills all instances, but then Chrome shows "Chrome didn't shutdown correctly" message
@@ -324,6 +303,40 @@ public class Utils {
 
     }
 
+    public static void stopPlatform() {
+        setFlag_GracefulShutdown();
+        if(isV3Installer()) {
+            String[] cmd;
+            if (Config.isWindows) {
+                cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "killtasks.bat"};
+            } else {
+                cmd = new String[]{"bash", "-c", Config.v3ScriptsPath + File.separator + "killtasks.sh"};
+
+            }
+            executeCommand(cmd, false);
+        } else {
+            stopViewer();
+        }
+    }
+
+    public static void restartPlatform() {
+        setFlag_GracefulShutdown();
+        if(isV3Installer()) {
+            String[] cmd;
+            if (Config.isWindows) {
+                cmd = new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "restart.bat", "--unattended",
+                        "--skip-countdown", "--rollout-pct=0" };
+            } else {
+                cmd = new String[]{"bash", "-c", Config.v3ScriptsPath + File.separator + "restart.sh", "--unattended",
+                        "--skip-countdown", "--rollout-pct=0"};
+
+            }
+            executeCommand(cmd, false);
+        } else {
+            runAutoUpdateScript();
+        }
+    }
+
     public static boolean findProcess(String processName) {
 
         String[] cmdTasklist = new String[]{"tasklist", "/FI", "IMAGENAME eq " + processName};
@@ -341,26 +354,17 @@ public class Utils {
     public static boolean isV3Installer() {
     	return new File(Config.v3Launcher).exists();
     }
-    
-    public static void runAutoUpdateScript() {
-    	runAutoUpdateScript(false);
-    }
 
-    public static void runAutoUpdateScript(boolean quickRestart) {
+    public static void runAutoUpdateScript() {
         //Important: need to run script in background so when script closes Player it does not kill itself running as child process
         // "/S" = silent
         // "/C" = clear browser cache
         String[] cmd;
-        
+
         if (Config.isWindows) {
             if(isV3Installer()) {
-            	List<String> argsList = new ArrayList<>(Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "restart.bat", "--unattended" }));
-            	
-            	if(quickRestart) {
-            		argsList.add("--skip-countdown");
-            		argsList.add("--rollout-pct=0");
-            	}
-            	
+                List<String> argsList = new ArrayList<>(Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"",
+                        Config.v3Launcher, "restart.bat", "--unattended" }));
                 cmd = argsList.toArray(new String[argsList.size()]);
             }
             else {
@@ -369,15 +373,13 @@ public class Utils {
         }
         else {
             if(isV3Installer()) {
-                String launcherParams = quickRestart ? " --skip-countdown --rollout-pct=0" : "";
-                
-                cmd = new String[]{"bash", "-c", Config.v3Launcher + launcherParams + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
+                cmd = new String[]{"bash", "-c", Config.v3Launcher + " --unattended > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
             else {
                 cmd = new String[]{"bash", "-c", Config.v2Launcher + " /S /C > " + Config.appPath + File.separator + "installer.log  2>&1 &"};
             }
         }
-        
+
         executeCommand(cmd, false);
     }
 

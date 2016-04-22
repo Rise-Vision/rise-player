@@ -263,7 +263,6 @@ class Worker extends WebServer implements HttpConstants, Runnable {
             } else if (isRestart) {
                 log("restart command received");
                 ExternalLogger.logExternal(InsertSchema.withEvent("local restart requested"));
-                Utils.setFlag_GracefulShutdown();
                 Utils.restart();
             } else if (isReboot) {
                 log("reboot command received");
@@ -275,7 +274,7 @@ class Worker extends WebServer implements HttpConstants, Runnable {
                 ExternalLogger.logExternal(InsertSchema.withEvent("local shutdown requested"));
                 Utils.setFlag_GracefulShutdown();
                 DisplayErrors.getInstance().writeErrorsToFile();
-                Utils.stopViewer();
+                Utils.stopPlatform();
                 System.exit(0);
             } else if (isVersion) {
                 HttpUtils.printHeadersCommon(ps, CONTENT_TYPE_TEXT_PLAIN, Globals.APPLICATION_VERSION.length());
