@@ -23,6 +23,7 @@ public class RestartTimer {
         public void run() {
             ExternalLogger.logExternal(InsertSchema.withEvent("timer restart"));
 
+            Utils.setFlag_GracefulShutdown();
             Utils.setFlag_Restarting();
             Utils.setFlag_ClearCacheAfterReboot();
             if (!Config.restartOverride.equals("true")) {
