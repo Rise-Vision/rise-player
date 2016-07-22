@@ -24,7 +24,7 @@ import com.risevision.riseplayer.externallogger.InsertSchema;
 public class Utils {
 
     public static void reboot() {
-
+        setFlag_GracefulShutdown();
         DisplayErrors.getInstance().writeErrorsToFile();
 
         String[] shutdownCmdWindows = new String[]{"shutdown", "-r", "-c", "Rise Player needs to reboot computer."};
@@ -351,7 +351,8 @@ public class Utils {
         // "/S" = silent
         // "/C" = clear browser cache
         String[] cmd;
-        
+
+        setFlag_GracefulShutdown();
         if (Config.isWindows) {
             if(isV3Installer()) {
             	List<String> argsList = new ArrayList<>(Arrays.asList(new String[]{ "cmd", "/c", "start", "\"\"", Config.v3Launcher, "restart.bat", "--unattended" }));
